@@ -1,0 +1,46 @@
+*{
+    margin: 0;
+    padding: 10px;
+}
+
+body {
+    background-color: darkgreen;
+}
+
+#allGuessedCardsDiv{
+    display: grid;
+    grid-template-columns: repeat(5, 300px);
+    grid-template-rows: auto;
+    padding: 100px;
+}
+
+#availableCardsDiv {
+    display: grid;
+    grid-template-columns: repeat(13, 300px);
+    grid-template-rows: auto;
+    padding: 100px;
+    /* border: 1px red solid; */
+}
+
+.guessableCards{
+    transition: .5s;
+}
+
+.guessableCards:hover{
+    transform: scale(1.1);
+}
+
+button {
+    font-size: 20px;
+    border-radius: 10px;
+    transition: .5s;
+}
+
+button:hover{
+    background-color: grey;
+    transform: scale(1.2);
+}
+
+img{
+    height: 300px;
+}
