@@ -7,8 +7,14 @@ let guessCounter = 1;
 const submitBtn = document.querySelector("#submitBtn")
 submitBtn.addEventListener("click", (e) => {
     //handle/alert if guess array length is < 5
+    //after 5th sumbission don't take more guesses
   handleSubmit(e)
 })
+
+const resetBtn = document.getElementById("resetBtn")
+resetBtn.addEventListener("click", () => {
+  document.location.reload();
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   fetch("https://deckofcardsapi.com/api/deck/new/")
@@ -26,7 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const tempImg = document.createElement('img')
             tempImg.src = element.images.png
-            tempImg.addEventListener("click", e => addGuess(e))
+            tempImg.addEventListener("click", e => {
+              if (currentGuessArray.length <= 4) {addGuess(e)}
+            })
             tempImg.id = element.code
             //console.log(tempImg.id)
             const cardPlace = document.getElementById('availableCardsDiv')
@@ -45,11 +53,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const guessedCardDiv = document.createElement("div")
     const guessedCardImage = document.createElement("img")
     guessedCardImage.src = e.target.src
-    currentGuessArray.push(e.target.id)
-    guessedCardDiv.classList.add(`guess${e.target.id}`)
+    const currentID = e.target.id
+    currentGuessArray.push(currentID)
+    guessedCardDiv.classList.add(`guess${currentID}`)
     //console.log(currentGuessArray)
     
-    //guessedCardImage.addEventListener("click", (e) => {e.target.remove()})
+    guessedCardImage.addEventListener("click", (e) => {
+      const indexToRemove = currentGuessArray.indexOf(currentID)
+      currentGuessArray.splice(indexToRemove, 1)
+      //console.log(indexToRemove)
+      e.target.parentNode.remove()
+    })
     //guessedCardImage.id = `guess`
     const guessedCardSpace = document.getElementById(`guessedCards${guessCounter}`)
     //console.log(`guessedCards${guessCounter}`)
@@ -84,5 +98,6 @@ function handleSubmit(e){
       thisGuessDiv.appendChild(resultText)
     })
   }
-  //guessCounter ++;
+  currentGuessArray = []
+  guessCounter ++;
 }
