@@ -9,14 +9,21 @@ body {
 
 #allGuessedCardsDiv{
     display: grid;
-    grid-template-columns: repeat(5, 300px);
+    grid-template-columns: repeat(5, 200px);
+    grid-template-rows: auto;
+    padding: 100px;
+}
+
+.guessed{
+    display: grid;
+    grid-template-columns: repeat(5, 200px);
     grid-template-rows: auto;
     padding: 100px;
 }
 
 #availableCardsDiv {
     display: grid;
-    grid-template-columns: repeat(13, 300px);
+    grid-template-columns: repeat(13, 200px);
     grid-template-rows: auto;
     padding: 100px;
     /* border: 1px red solid; */
@@ -42,5 +49,5 @@ button:hover{
 }
 
 img{
-    height: 300px;
+    height: 200px;
 }
