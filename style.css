@@ -1,67 +1,87 @@
-*{
-    margin: 0;
-    padding: 10px;
+/* GENERAL ---------------------------------------- */
+* {
+  margin: 0;
+  padding: 10px;
 }
 
 body {
-    background-color: darkgreen;
+  background-color: darkgreen;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-p{
-    background-color: antiquewhite;
-}
-#allGuessedCardsDiv{
-    display: flex;
-    flex-direction: column;
+p {
+  background-color: antiquewhite;
 }
 
-.guessed{
-    display: grid;
-    grid-template-columns: repeat(5, 200px);
-    grid-template-rows: auto;
-    padding: 10px;
-    /* border: 1px pink solid; */
+.blocked {
+  pointer-events: none;
 }
 
+/* GOAL CARDS ------------------------------------- */
+.goalBox {
+  border: 1px white solid;
+}
+#goalCardsDiv {
+  display: flex;
+  gap: 20px;
+}
+/* GUESSED CARDS ---------------------------------- */
+#allGuessedCardsDiv {
+  display: flex;
+  flex-direction: column;
+}
+
+.guessed {
+  display: grid;
+  grid-template-columns: repeat(5, 100px);
+  grid-template-rows: auto;
+  padding: 10px;
+  /* border: 1px pink solid; */
+}
+
+.guessedCard img {
+  height: 80px;
+}
+
+/* AVAILABLE CARDS --------------------------------- */
 #availableCardsDiv {
-    display: grid;
-    background-color: aqua;
-    grid-template-columns: repeat(13, 200px);
-    grid-template-rows: auto;
-    padding: 10px;
-    /* border: 1px red solid; */
+  display: grid;
+  background-color: rgb(31, 198, 120);
+  grid-template-columns: repeat(13, 50px);
+  grid-template-rows: auto;
+  width: 100%;
+  /* padding: 10px; */
+  /* border: 1px red solid; */
 }
 
-.blocked{
-    pointer-events: none;
-}
-.goalBox{
-    border: 1px white solid;
-}
-#goalCardsDiv{
-    display: flex;
-    gap: 20px
+.guessableCards {
+  transition: 0.5s;
+  padding: 0;
 }
 
-.guessableCards{
-    transition: .5s;
+.guessableCards:hover {
+  transform: scale(1.1);
 }
 
-.guessableCards:hover{
-    transform: scale(1.1);
+.guessableCards img {
+  height: 100px;
+  padding: 0;
+}
+
+/* BUTTONS --------------------------------------- */
+#buttonsDiv {
+  display: flex;
 }
 
 button {
-    font-size: 20px;
-    border-radius: 10px;
-    transition: .5s;
+  font-size: 20px;
+  border-radius: 10px;
+  transition: 0.5s;
 }
 
-button:hover{
-    background-color: grey;
-    transform: scale(1.2);
-}
-
-img{
-    height: 200px;
+button:hover {
+  background-color: grey;
+  transform: scale(1.2);
 }
