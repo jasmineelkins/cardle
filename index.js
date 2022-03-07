@@ -1,31 +1,20 @@
 const goalCardsArray = ["AS", "2S", "3S", "4S", "5S"];
 let currentGuessArray = [];
 let deckID;
-
 let guessCounter = 0;
 
-const submitBtn = document.querySelector("#submitBtn");
-submitBtn.addEventListener("click", (e) => {
-  //handle/alert if guess array length is < 5
-  //after 5th sumbission don't take more guesses
-  if (currentGuessArray.length < 5) {
-    alert("You need 5 cards to guess");
-  } else {
-    handleSubmit(e);
-  }
-});
-
-const resetBtn = document.getElementById("resetBtn");
-resetBtn.addEventListener("click", () => {
-  document.location.reload();
-});
-
 document.addEventListener("DOMContentLoaded", () => {
+  appendCardBacks();
+
+  function setGoalCards() {
+    fetch();
+  }
+
   fetch("https://deckofcardsapi.com/api/deck/new/")
     .then((response) => response.json())
     .then((data) => {
       deckID = data.deck_id;
-      fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=13`)
+      fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
         .then((response) => response.json())
         .then((data) => {
           //console.log(data.cards)
@@ -53,6 +42,33 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
     });
+});
+
+// placeholder card back images
+function appendCardBacks() {
+  for (let i = 0; i < 5; i++) {
+    const cardBack = document.createElement("img");
+    cardBack.src = "assets/card.png";
+    cardBack.classList.add("cardBack");
+
+    let thisGoal = document.querySelector(`#goal${i}`);
+    thisGoal.append(cardBack);
+  }
+}
+
+const submitBtn = document.querySelector("#submitBtn");
+submitBtn.addEventListener("click", (e) => {
+  // alert if guess array length is < 5 don't take more guesses
+  if (currentGuessArray.length < 5) {
+    alert("You need 5 cards to guess");
+  } else {
+    handleSubmit(e);
+  }
+});
+
+const resetBtn = document.getElementById("resetBtn");
+resetBtn.addEventListener("click", () => {
+  document.location.reload();
 });
 
 function addGuess(e) {
@@ -96,9 +112,11 @@ function handleSubmit(e) {
       const thisGuessDiv = currentGuessDiv.querySelector(`.guess${guess}`);
       if (goalCardsArray.includes(guess)) {
         resultText.textContent = "IN";
+        resultText.classList.add("in");
         //thisGuessDiv.append(resultText)
       } else {
         resultText.textContent = "NOT IN";
+        resultText.classList.add("notIn");
       }
       thisGuessDiv.appendChild(resultText);
       thisGuessDiv.classList.add("blocked");
