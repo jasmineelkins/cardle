@@ -32,6 +32,9 @@ p{
     /* border: 1px red solid; */
 }
 
+.blocked{
+    pointer-events: none;
+}
 .goalBox{
     border: 1px white solid;
 }

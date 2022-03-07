@@ -96,6 +96,7 @@ function handleSubmit(e){
         resultText.textContent = "NOT IN"
       }
       thisGuessDiv.appendChild(resultText)
+      thisGuessDiv.classList.add("blocked")
     })
   }
   currentGuessArray = []
