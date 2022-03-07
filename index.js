@@ -1,14 +1,51 @@
-const goalCardsArray = ["AS", "2S", "3S", "4S", "5S"];
+// const goalCardsArray = ["AS", "2S", "3S", "4S", "5S"];
+const goalCardsArray = [];
+const goalCardImagesArray = [];
+const winningDiv = document.querySelector("#winningDiv");
+const availableCardsDiv = document.getElementById("availableCardsDiv");
+
 let currentGuessArray = [];
 let deckID;
 let guessCounter = 0;
+let winning = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   appendCardBacks();
 
   function setGoalCards() {
-    fetch();
+    fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data);
+        const goalDeckID = data.deck_id;
+
+        fetch(`https://deckofcardsapi.com/api/deck/${goalDeckID}/draw/?count=5`)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+
+            data.cards.forEach((card) => {
+              const cardFace = document.createElement("img");
+              cardFace.src = card.image;
+
+              goalCardsArray.push(card.code);
+              goalCardImagesArray.push(card.image);
+              // console.log(goalCardImagesArray);
+
+              // if (winning) {
+              //   for (let i = 0; i < 5; i++) {
+              //     cardFace.classList.add("cardBack");
+
+              //     let thisGoal = document.querySelector(`#goal${i}`);
+              //     thisGoal.append(cardFace);
+              //   }
+              // }
+            });
+          });
+      });
   }
+
+  setGoalCards();
 
   fetch("https://deckofcardsapi.com/api/deck/new/")
     .then((response) => response.json())
@@ -36,9 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             tempImg.id = element.code;
             //console.log(tempImg.id)
-            const cardPlace = document.getElementById("availableCardsDiv");
             tempCard.append(tempImg);
-            cardPlace.appendChild(tempCard);
+            availableCardsDiv.appendChild(tempCard);
           });
         });
     });
@@ -54,6 +90,21 @@ function appendCardBacks() {
     let thisGoal = document.querySelector(`#goal${i}`);
     thisGoal.append(cardBack);
   }
+}
+
+function appendGoalCards() {
+  for (let i = 0; i < 5; i++) {
+    const goalCard = document.createElement("img");
+    goalCard.src = goalCardImagesArray[i];
+    goalCard.classList.add("cardBack");
+
+    let thisGoal = document.querySelector(`#goal${i}`);
+    thisGoal.replaceChildren(goalCard);
+  }
+}
+
+function createGuessGrid() {
+  // is it better to add grid dynamically?
 }
 
 const submitBtn = document.querySelector("#submitBtn");
@@ -105,7 +156,11 @@ function handleSubmit(e) {
     return currentGuessArray.includes(id);
   });
   if (commonCards.length === 5) {
-    alert("YOU WON!!!");
+    // winning = true;
+    appendGoalCards();
+    // alert("YOU WON!!!");
+    availableCardsDiv.classList.add("hidden");
+    winningDiv.classList.remove("hidden");
   } else {
     currentGuessArray.forEach((guess) => {
       const resultText = document.createElement("p");
