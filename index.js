@@ -5,7 +5,10 @@ let deckID;
 let guessCounter = 1;
 
 const submitBtn = document.querySelector("#submitBtn")
-submitBtn.addEventListener("click", (e) => handleSubmit(e))
+submitBtn.addEventListener("click", (e) => {
+    //handle/alert if guess array length is < 5
+  handleSubmit(e)
+})
 
 document.addEventListener("DOMContentLoaded", () => {
   fetch("https://deckofcardsapi.com/api/deck/new/")
@@ -43,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const guessedCardImage = document.createElement("img")
     guessedCardImage.src = e.target.src
     currentGuessArray.push(e.target.id)
+    guessedCardDiv.classList.add(`guess${e.target.id}`)
     //console.log(currentGuessArray)
     
     //guessedCardImage.addEventListener("click", (e) => {e.target.remove()})
@@ -56,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 function handleSubmit(e){
+  const currentGuessDiv = document.querySelector(`#guessedCards${guessCounter}`)
   const commonCards = goalCardsArray.filter((id) => {
     return currentGuessArray.includes(id)
   })
@@ -64,5 +69,20 @@ function handleSubmit(e){
   // console.log("common cards ", commonCards)
   if (commonCards.length === 5){
     alert("YOU WON!!!")
+  } else {
+    currentGuessArray.forEach(guess => {
+      const resultText = document.createElement('p')
+      const thisGuessDiv = currentGuessDiv.querySelector(`.guess${guess}`)
+      if (goalCardsArray.includes(guess)){
+        //console.log(guess, " in")
+        resultText.textContent = "IN"
+        //thisGuessDiv.append(resultText)
+      } else {
+        //console.log(guess, " not in")
+        resultText.textContent = "NOT IN"
+      }
+      thisGuessDiv.appendChild(resultText)
+    })
   }
+  //guessCounter ++;
 }
