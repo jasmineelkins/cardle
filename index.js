@@ -2,13 +2,14 @@ const goalCardsArray = ['AS', "2S", "3S", "4S", "5S"];
 let currentGuessArray = [];
 let deckID; 
 
-let guessCounter = 1;
+let guessCounter = 0;
 
 const submitBtn = document.querySelector("#submitBtn")
 submitBtn.addEventListener("click", (e) => {
     //handle/alert if guess array length is < 5
     //after 5th sumbission don't take more guesses
-  handleSubmit(e)
+  if (currentGuessArray.length < 4) { alert("You need 5 cards to guess")}
+  else {  handleSubmit(e) }
 })
 
 const resetBtn = document.getElementById("resetBtn")
@@ -33,7 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const tempImg = document.createElement('img')
             tempImg.src = element.images.png
             tempImg.addEventListener("click", e => {
-              if (currentGuessArray.length <= 4) {addGuess(e)}
+              if (currentGuessArray.length <= 4) {
+                if (!currentGuessArray.includes(element.code)){
+                  //console.log(currentGuessArray)
+                  console.log((element))
+                  addGuess(e)}
+              }
             })
             tempImg.id = element.code
             //console.log(tempImg.id)
@@ -48,28 +54,27 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   function addGuess(e){
-    //console.log(e.target.id)
 
     const guessedCardDiv = document.createElement("div")
+
     const guessedCardImage = document.createElement("img")
     guessedCardImage.src = e.target.src
+
     const currentID = e.target.id
     currentGuessArray.push(currentID)
     guessedCardDiv.classList.add(`guess${currentID}`)
-    //console.log(currentGuessArray)
     
     guessedCardImage.addEventListener("click", (e) => {
       const indexToRemove = currentGuessArray.indexOf(currentID)
       currentGuessArray.splice(indexToRemove, 1)
-      //console.log(indexToRemove)
       e.target.parentNode.remove()
     })
-    //guessedCardImage.id = `guess`
+
     const guessedCardSpace = document.getElementById(`guessedCards${guessCounter}`)
-    //console.log(`guessedCards${guessCounter}`)
+
     guessedCardDiv.append(guessedCardImage)
     guessedCardSpace.appendChild(guessedCardDiv)
-    //figure out how to stop taking guesses after 5
+
     //if top id == bottom id (ie AD, 2D), then toggle mouseclick/pointer event
   }
 
@@ -96,8 +101,13 @@ function handleSubmit(e){
         resultText.textContent = "NOT IN"
       }
       thisGuessDiv.appendChild(resultText)
+      thisGuessDiv.classList.add("blocked")
     })
   }
   currentGuessArray = []
   guessCounter ++;
+  if (guessCounter === 5){
+    alert("you have no more guesses :(")
+    submitBtn.classList.add("blocked")
+  }
 }
