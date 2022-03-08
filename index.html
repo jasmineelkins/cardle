@@ -25,7 +25,30 @@
   </head>
 
   <body>
-    <header>Qardle</header>
+    <header>
+      <div id="leftDiv"></div>
+      <div id="titleDiv">
+        <h1>Qardle</h1>
+      </div>
+
+      <div id="faqBtnDiv">
+        <button id="faqBtn">
+          <i class="fas fa-question" id="icon"></i>
+        </button>
+      </div>
+
+      <div id="faqText" class="hidden">
+        Lorem Ipsum is simply dummy text of the printing and typesetting
+        industry. Lorem Ipsum has been the industry's standard dummy text ever
+        since the 1500s, when an unknown printer took a galley of type and
+        scrambled it to make a type specimen book. It has survived not only five
+        centuries, but also the leap into electronic typesetting, remaining
+        essentially unchanged. It was popularised in the 1960s with the release
+        of Letraset sheets containing Lorem Ipsum passages, and more recently
+        with desktop publishing software like Aldus PageMaker including versions
+        of Lorem Ipsum.
+      </div>
+    </header>
     <div id="goalCardsDiv">
       <div id="goal0" class="goalBox"></div>
       <div id="goal1" class="goalBox"></div>
@@ -34,16 +57,17 @@
       <div id="goal4" class="goalBox"></div>
     </div>
 
+    <div id="winningDiv" class="hidden">Congratulations! You win</div>
+    <div id="losingDiv" class="hidden">YOU LOSE</div>
+
     <div id="allGuessedCardsDiv"></div>
 
     <div id="buttonsDiv">
       <button id="submitBtn" class="btn">Submit</button>
       <button id="resetBtn" class="btn">Reset</button>
+      <button id="giveUpBtn" class="btn">Give Up?</button>
     </div>
 
     <div id="availableCardsDiv"></div>
-
-    <div id="winningDiv" class="hidden">Congratulations! You win</div>
-    <div id="losingDiv" class="hidden">YOU LOSE</div>
   </body>
 </html>

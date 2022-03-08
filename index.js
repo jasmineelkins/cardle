@@ -1,7 +1,5 @@
 const goalCardsArray = [];
 const goalCardImagesArray = [];
-const winningDiv = document.querySelector("#winningDiv");
-const losingDiv = document.querySelector("#losingDiv");
 const availableCardsDiv = document.getElementById("availableCardsDiv");
 
 let currentGuessArray = [];
@@ -13,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setGoalCards();
   setAvailableCards();
   createGuessGrid();
+  populateButtons();
 });
 
 function setAvailableCards() {
@@ -32,7 +31,6 @@ function setAvailableCards() {
             tempImg.addEventListener("click", (e) => {
               if (currentGuessArray.length <= 4) {
                 if (!currentGuessArray.includes(element.code)) {
-                  //console.log(element);
                   addGuess(e);
                 }
               }
@@ -129,118 +127,146 @@ function handleSubmit() {
     return currentGuessArray.includes(id);
   });
 
-  if (commonCards.length === 5) {
-    gameEnd = true;
-    appendGoalCards();
-    availableCardsDiv.classList.add("hidden");
-    winningDiv.classList.remove("hidden");
-  } else {
-    for (let i = 0; i < 5; i++) {
-      const currentGuessCell = currentGuessRow.querySelector(`.guess${i}`);
+  for (let i = 0; i < 5; i++) {
+    const currentGuessCell = currentGuessRow.querySelector(`.guess${i}`);
 
-      const resultDiv = document.createElement("div");
-      const valueDiv = document.createElement("div");
-      const suitDiv = document.createElement("div");
-      let suitMatch = false;
-      let valueMatch = false;
-      let allMatch = false;
+    const resultDiv = document.createElement("div");
+    const valueDiv = document.createElement("div");
+    const suitDiv = document.createElement("div");
+    let suitMatch = false;
+    let valueMatch = false;
+    let allMatch = false;
 
-      const currentGuessValue = currentGuessArray[i][0];
-      const currentGuessSuit = currentGuessArray[i][1];
-      let suitIcon;
+    const currentGuessValue = currentGuessArray[i][0];
+    const currentGuessSuit = currentGuessArray[i][1];
+    let suitIcon;
 
-      currentGuessCell.classList.add("blocked", "submitted");
-      resultDiv.classList.add("results");
-      suitDiv.classList.add("suit");
-      valueDiv.classList.add("value");
+    currentGuessCell.classList.add("blocked", "submitted");
+    resultDiv.classList.add("results");
+    suitDiv.classList.add("suit");
+    valueDiv.classList.add("value");
 
-      if (currentGuessValue === "0") {
-        valueDiv.textContent = "10";
-      } else {
-        valueDiv.textContent = currentGuessValue;
-      }
-
-      switch (currentGuessSuit) {
-        case "H":
-          suitIcon = "❤️";
-          break;
-        case "S":
-          suitIcon = "♠️";
-          break;
-        case "C":
-          suitIcon = "♣️";
-          break;
-        case "D":
-          suitIcon = "♦️";
-          break;
-      }
-      suitDiv.textContent = suitIcon;
-
-      if (goalCardsArray.includes(currentGuessArray[i])) {
-        allMatch = true;
-        suitMatch = true;
-        valueMatch = true;
-        resultDiv.textContent = "QARD!";
-        resultDiv.classList.add("allMatch");
-      } else {
-        let i = 0;
-
-        while (!valueMatch && i < 5) {
-          if (currentGuessValue === goalCardsArray[i][0]) {
-            valueMatch = true;
-          }
-          i++;
-        }
-
-        let j = 0;
-        while (!suitMatch && j < 5) {
-          if (currentGuessSuit === goalCardsArray[j][1]) {
-            suitMatch = true;
-          }
-          j++;
-        }
-      }
-
-      if (valueMatch) {
-        valueDiv.classList.add("correct");
-      } else {
-        valueDiv.classList.add("wrong");
-      }
-
-      if (suitMatch) {
-        suitDiv.classList.add("correct");
-      } else {
-        suitDiv.classList.add("wrong");
-      }
-
-      if (!allMatch) {
-        resultDiv.append(valueDiv, suitDiv);
-      }
-
-      currentGuessCell.append(resultDiv);
+    if (currentGuessValue === "0") {
+      valueDiv.textContent = "10";
+    } else {
+      valueDiv.textContent = currentGuessValue;
     }
+
+    switch (currentGuessSuit) {
+      case "H":
+        suitIcon = "❤️";
+        break;
+      case "S":
+        suitIcon = "♠️";
+        break;
+      case "C":
+        suitIcon = "♣️";
+        break;
+      case "D":
+        suitIcon = "♦️";
+        break;
+    }
+    suitDiv.textContent = suitIcon;
+
+    if (goalCardsArray.includes(currentGuessArray[i])) {
+      allMatch = true;
+      suitMatch = true;
+      valueMatch = true;
+      resultDiv.textContent = "QARD!";
+      resultDiv.classList.add("allMatch");
+    } else {
+      let i = 0;
+
+      while (!valueMatch && i < 5) {
+        if (currentGuessValue === goalCardsArray[i][0]) {
+          valueMatch = true;
+        }
+        i++;
+      }
+
+      let j = 0;
+      while (!suitMatch && j < 5) {
+        if (currentGuessSuit === goalCardsArray[j][1]) {
+          suitMatch = true;
+        }
+        j++;
+      }
+    }
+
+    if (valueMatch) {
+      valueDiv.classList.add("correct");
+    } else {
+      valueDiv.classList.add("wrong");
+    }
+
+    if (suitMatch) {
+      suitDiv.classList.add("correct");
+    } else {
+      suitDiv.classList.add("wrong");
+    }
+
+    if (!allMatch) {
+      resultDiv.append(valueDiv, suitDiv);
+    }
+
+    currentGuessCell.append(resultDiv);
   }
+  if (commonCards.length === 5) {
+    endGame("win");
+  }
+
   currentGuessArray = [];
   guessCounter++;
+
   if (guessCounter === 5) {
-    submitBtn.classList.add("blocked");
-    availableCardsDiv.classList.add("hidden");
-    losingDiv.classList.remove("hidden");
-    gameEnd = true;
-    appendGoalCards();
+    endGame();
   }
 }
 
-const submitBtn = document.querySelector("#submitBtn");
-submitBtn.addEventListener("click", () => {
-  if (currentGuessArray.length < 5) {
-    alert("You need 5 cards to guess");
-  } else {
-    handleSubmit();
-  }
-});
+// Game End Function
+function endGame(result = "lose") {
+  submitBtn.classList.add("hidden");
+  giveUpBtn.classList.add("hidden");
+  availableCardsDiv.classList.add("hidden");
+  gameEnd = true;
+  appendGoalCards();
+  window.scrollTo(0, 0);
 
-const resetBtn = document.getElementById("resetBtn");
-resetBtn.addEventListener("click", () => {
-  document.location.reload();
-});
+  if (result !== "lose") {
+    const winningDiv = document.querySelector("#winningDiv");
+    winningDiv.classList.remove("hidden");
+  } else {
+    const losingDiv = document.querySelector("#losingDiv");
+    losingDiv.classList.remove("hidden");
+  }
+}
+
+// Buttons & Event Listeners
+function populateButtons() {
+  const faqBtn = document.querySelector("#faqBtn");
+  faqBtn.addEventListener("click", () => {
+    const faqText = document.querySelector("#faqText");
+    faqText.classList.toggle("hidden");
+  });
+
+  const submitBtn = document.querySelector("#submitBtn");
+  submitBtn.addEventListener("click", () => {
+    window.scrollTo(0, 350);
+
+    if (currentGuessArray.length < 5) {
+      alert("You need 5 cards to guess");
+    } else {
+      handleSubmit();
+    }
+  });
+
+  const resetBtn = document.getElementById("resetBtn");
+  resetBtn.addEventListener("click", () => {
+    document.location.reload();
+  });
+
+  const giveUpBtn = document.querySelector("#giveUpBtn");
+  giveUpBtn.addEventListener("click", () => {
+    endGame();
+  });
+}

@@ -1,4 +1,4 @@
-# cardle
+# qardle
 
 wordle - but with CARDS!
 
