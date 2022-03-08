@@ -92,6 +92,10 @@ p {
   /* box-shadow: 2px 2px black; */
 }
 
+.results {
+  background-color: limegreen;
+}
+
 .in {
   background-color: rgb(186, 216, 78);
 }
