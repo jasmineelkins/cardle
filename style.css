@@ -66,6 +66,14 @@ header {
 
 .guessedCard img {
   height: 80px;
+  /* padding-top: 0px; */
+  
+}
+
+.guessedCard.submitted img {
+  height: 70px;
+  padding-top: 0px;
+  padding-bottom: 5px;
 }
 
 .guessBox {
@@ -73,11 +81,14 @@ header {
   border-radius: 10px;
   height: 100px;
   padding: 10px 0;
+  text-align: center;
 }
 
 p {
   text-align: center;
   border-radius: 10px;
+  font-size: 15px;
+  padding: 6px;
   /* box-shadow: 2px 2px black; */
 }
 
