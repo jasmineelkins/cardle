@@ -67,7 +67,6 @@ header {
 .guessedCard img {
   height: 80px;
   /* padding-top: 0px; */
-  
 }
 
 .guessedCard.submitted img {
@@ -84,23 +83,36 @@ header {
   text-align: center;
 }
 
-p {
+/* p {
   text-align: center;
   border-radius: 10px;
   font-size: 15px;
   padding: 6px;
-  /* box-shadow: 2px 2px black; */
-}
+} */
 
 .results {
-  background-color: limegreen;
+  border-radius: 10px;
+  font-size: 15px;
+  padding: 0px;
+  /* background-color: limegreen; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.in {
+.value {
+  border-radius: 10px 0 0 10px;
+}
+
+.suit {
+  border-radius: 0 10px 10px 0;
+}
+
+.correct {
   background-color: rgb(186, 216, 78);
 }
 
-.notIn {
+.wrong {
   background-color: tomato;
 }
 

@@ -8,6 +8,11 @@ let currentGuessArray = [];
 let guessCounter = 0;
 let winning = false;
 
+const heart = "assets/heart.png";
+const diamond = "assets/diamond.png";
+const club = "assets/club.png";
+const spade = "assets/spade.png";
+
 document.addEventListener("DOMContentLoaded", () => {
   appendGoalCards();
   setGoalCards();
@@ -17,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setAvailableCards() {
   fetch("https://deckofcardsapi.com/api/deck/new/")
-  .then((response) => response.json())
-  .then((data) => {
+    .then((response) => response.json())
+    .then((data) => {
       const deckID = data.deck_id;
       fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
         .then((response) => response.json())
@@ -83,25 +88,26 @@ function appendGoalCards() {
 }
 
 function createGuessGrid() {
-  const gridDiv = document.getElementById("allGuessedCardsDiv")
+  const gridDiv = document.getElementById("allGuessedCardsDiv");
 
-  for (let i = 0; i < 5; i++){
-    const row = document.createElement('div')
-    row.classList.add("guessed")
-    row.id = `guessedCards${i}`
-    for (let j = 0; j < 5; j++){
-      const cell = document.createElement('div')
-      cell.classList.add("guessBox", `guess${j}`)
-      row.appendChild(cell)
+  for (let i = 0; i < 5; i++) {
+    const row = document.createElement("div");
+    row.classList.add("guessed");
+    row.id = `guessedCards${i}`;
+    for (let j = 0; j < 5; j++) {
+      const cell = document.createElement("div");
+      cell.classList.add("guessBox", `guess${j}`);
+      row.appendChild(cell);
     }
-    gridDiv.append(row)
+    gridDiv.append(row);
   }
-
 }
 
 function addGuess(e) {
-  const guessedCardRow = document.querySelector(`#guessedCards${guessCounter}`)
-  const guessedCardCell = guessedCardRow.querySelector(`.guess${currentGuessArray.length}`);
+  const guessedCardRow = document.querySelector(`#guessedCards${guessCounter}`);
+  const guessedCardCell = guessedCardRow.querySelector(
+    `.guess${currentGuessArray.length}`
+  );
 
   const guessedCardImage = document.createElement("img");
   guessedCardImage.src = e.target.src;
@@ -120,7 +126,9 @@ function addGuess(e) {
 }
 
 function handleSubmit(e) {
-  const currentGuessRow = document.querySelector(`#guessedCards${guessCounter}`);
+  const currentGuessRow = document.querySelector(
+    `#guessedCards${guessCounter}`
+  );
 
   const commonCards = goalCardsArray.filter((id) => {
     return currentGuessArray.includes(id);
@@ -132,40 +140,101 @@ function handleSubmit(e) {
     availableCardsDiv.classList.add("hidden");
     winningDiv.classList.remove("hidden");
   } else {
-    for (let i = 0; i < 5; i++){
-        const currentGuessCell = currentGuessRow.querySelector(`.guess${i}`);
-  
-        const resultDiv = document.createElement("div");
-        const valueDiv = document.createElement("div")
-        const suitDiv = document.createElement("div")
-        let suitMatch= false;
-        let valueMatch = false;
-        let allMatch = false;
-  
-  
-        if (goalCardsArray.includes(currentGuessArray[i])) {
-          // resultText.textContent = "IN";
-          // resultText.classList.add("in");
-          allMatch = true
-          suitMatch = true
-          valueMatch = true
-          resultDiv.textContent = "CARDS"
-        } else {
-          valueMatch = currentGuessArray[i].startsWith(goalCardsArray[i][0])
-          suitMatch = currentGuessArray[i][1] === goalCardsArray[i][1]
-          // resultText.textContent = "NOT IN";
-          // resultText.classList.add("notIn");
+    for (let i = 0; i < 5; i++) {
+      const currentGuessCell = currentGuessRow.querySelector(`.guess${i}`);
+
+      const resultDiv = document.createElement("div");
+      const valueDiv = document.createElement("div");
+      const suitDiv = document.createElement("div");
+      let suitMatch = false;
+      let valueMatch = false;
+      let allMatch = false;
+
+      const currentGuessValue = currentGuessArray[i][0];
+      const currentGuessSuit = currentGuessArray[i][1];
+      const suitIcon = document.createElement("img");
+      let suitIconSrc;
+
+      currentGuessCell.classList.add("blocked", "submitted");
+      resultDiv.classList.add("results");
+      suitDiv.classList.add("suit");
+      valueDiv.classList.add("value");
+
+      valueDiv.textContent = currentGuessValue;
+      switch (currentGuessSuit) {
+        case "H":
+          suitIconSrc = heart;
+          break;
+        case "S":
+          suitIconSrc = spade;
+          break;
+        case "C":
+          suitIconSrc = club;
+          break;
+        case "D":
+          suitIconSrc = diamond;
+          break;
+      }
+
+      suitIcon.src = suitIconSrc;
+      suitDiv.append(suitIcon);
+
+      if (goalCardsArray.includes(currentGuessArray[i])) {
+        console.log(i);
+        // resultText.textContent = "IN";
+        // resultText.classList.add("in");
+        allMatch = true;
+        suitMatch = true;
+        valueMatch = true;
+        resultDiv.textContent = "QARDS";
+      } else {
+        let i = 0;
+        // console.log("whhyyyyyyyy");
+        while (!valueMatch && i < 5) {
+          // console.log("maybe?");
+          if (currentGuessValue === goalCardsArray[i][0]) {
+            valueMatch = true;
+            // valueDiv.classList.add("correct");
+          }
+          i++;
         }
-        //currentGuessCell.appendChild(resultText);
-        currentGuessCell.classList.add("blocked", "submitted");
-        console.log("suit ", suitMatch, "value ", valueMatch, "all ", allMatch)
-        resultDiv.classList.add("results")
-        resultDiv.append(valueDiv, suitDiv)
-        currentGuessCell.append(resultDiv)
 
-      };
+        let j = 0;
+        while (!suitMatch && j < 5) {
+          if (currentGuessSuit === goalCardsArray[j][1]) {
+            suitMatch = true;
+            // suitDiv.classList.add("correct");
+          }
+          j++;
+        }
 
-    
+        // valueMatch = currentGuessArray[i].startsWith(goalCardsArray[i][0]);
+        // suitMatch = currentGuessArray[i][1] === goalCardsArray[i][1];
+        // resultText.textContent = "NOT IN";
+        // resultText.classList.add("notIn");
+      }
+
+      if (valueMatch) {
+        valueDiv.classList.add("correct");
+      } else {
+        valueDiv.classList.add("wrong");
+      }
+
+      if (suitMatch) {
+        suitDiv.classList.add("correct");
+      } else {
+        suitDiv.classList.add("wrong");
+      }
+      //currentGuessCell.appendChild(resultText);
+      // console.log("suit ", suitMatch, "value ", valueMatch, "all ", allMatch);
+
+      if (!allMatch) {
+        resultDiv.append(valueDiv, suitDiv);
+      }
+
+      currentGuessCell.append(resultDiv);
+    }
+
     // currentGuessArray.forEach((guess) => {
     //   const currentGuessCell = currentGuessRow.querySelector(`.guess${guess}`);
 
@@ -175,7 +244,6 @@ function handleSubmit(e) {
     //   let suitMatch
     //   let valueMatch
     //   let allMatch
-
 
     //   if (goalCardsArray.includes(guess)) {
     //     // resultText.textContent = "IN";
@@ -197,7 +265,6 @@ function handleSubmit(e) {
     submitBtn.classList.add("blocked");
   }
 }
-
 
 //put the buttons in the init function? or just they should live at top
 

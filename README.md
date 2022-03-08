@@ -38,3 +38,9 @@ Each time you load, the API resets
 (Maybe extra stretch metrics would be to have this load every time?)
 
 ---
+
+Image credits:
+spade: https://svg-clipart.com/symbol/qqBY3LM-spade-symbol-clipart
+heart: https://svg-clipart.com/symbol/X5sOrFB-heart-symbol-clipart
+diamond: https://svg-clipart.com/symbol/EfO6f7N-single-diamond-clipart
+club:
