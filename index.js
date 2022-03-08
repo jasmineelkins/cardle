@@ -1,17 +1,12 @@
-// const goalCardsArray = ["AS", "2S", "3S", "4S", "5S"];
 const goalCardsArray = [];
 const goalCardImagesArray = [];
 const winningDiv = document.querySelector("#winningDiv");
+const losingDiv = document.querySelector("#losingDiv");
 const availableCardsDiv = document.getElementById("availableCardsDiv");
 
 let currentGuessArray = [];
 let guessCounter = 0;
-let winning = false;
-
-const heart = "assets/heart.png";
-const diamond = "assets/diamond.png";
-const club = "assets/club.png";
-const spade = "assets/spade.png";
+let gameEnd = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   appendGoalCards();
@@ -77,7 +72,7 @@ function appendGoalCards() {
     cardImg.classList.add("cardBack");
     let thisGoal = document.querySelector(`#goal${i}`);
 
-    if (!winning) {
+    if (!gameEnd) {
       cardImg.src = "assets/card.png";
       thisGoal.append(cardImg);
     } else {
@@ -125,7 +120,7 @@ function addGuess(e) {
   guessedCardCell.append(guessedCardImage);
 }
 
-function handleSubmit(e) {
+function handleSubmit() {
   const currentGuessRow = document.querySelector(
     `#guessedCards${guessCounter}`
   );
@@ -135,7 +130,7 @@ function handleSubmit(e) {
   });
 
   if (commonCards.length === 5) {
-    winning = true;
+    gameEnd = true;
     appendGoalCards();
     availableCardsDiv.classList.add("hidden");
     winningDiv.classList.remove("hidden");
@@ -152,49 +147,47 @@ function handleSubmit(e) {
 
       const currentGuessValue = currentGuessArray[i][0];
       const currentGuessSuit = currentGuessArray[i][1];
-      const suitIcon = document.createElement("img");
-      let suitIconSrc;
+      let suitIcon;
 
       currentGuessCell.classList.add("blocked", "submitted");
       resultDiv.classList.add("results");
       suitDiv.classList.add("suit");
       valueDiv.classList.add("value");
 
-      valueDiv.textContent = currentGuessValue;
-      switch (currentGuessSuit) {
-        case "H":
-          suitIconSrc = heart;
-          break;
-        case "S":
-          suitIconSrc = spade;
-          break;
-        case "C":
-          suitIconSrc = club;
-          break;
-        case "D":
-          suitIconSrc = diamond;
-          break;
+      if (currentGuessValue === "0") {
+        valueDiv.textContent = "10";
+      } else {
+        valueDiv.textContent = currentGuessValue;
       }
 
-      suitIcon.src = suitIconSrc;
-      suitDiv.append(suitIcon);
+      switch (currentGuessSuit) {
+        case "H":
+          suitIcon = "❤️";
+          break;
+        case "S":
+          suitIcon = "♠️";
+          break;
+        case "C":
+          suitIcon = "♣️";
+          break;
+        case "D":
+          suitIcon = "♦️";
+          break;
+      }
+      suitDiv.textContent = suitIcon;
 
       if (goalCardsArray.includes(currentGuessArray[i])) {
-        console.log(i);
-        // resultText.textContent = "IN";
-        // resultText.classList.add("in");
         allMatch = true;
         suitMatch = true;
         valueMatch = true;
-        resultDiv.textContent = "QARDS";
+        resultDiv.textContent = "QARD!";
+        resultDiv.classList.add("allMatch");
       } else {
         let i = 0;
-        // console.log("whhyyyyyyyy");
+
         while (!valueMatch && i < 5) {
-          // console.log("maybe?");
           if (currentGuessValue === goalCardsArray[i][0]) {
             valueMatch = true;
-            // valueDiv.classList.add("correct");
           }
           i++;
         }
@@ -203,15 +196,9 @@ function handleSubmit(e) {
         while (!suitMatch && j < 5) {
           if (currentGuessSuit === goalCardsArray[j][1]) {
             suitMatch = true;
-            // suitDiv.classList.add("correct");
           }
           j++;
         }
-
-        // valueMatch = currentGuessArray[i].startsWith(goalCardsArray[i][0]);
-        // suitMatch = currentGuessArray[i][1] === goalCardsArray[i][1];
-        // resultText.textContent = "NOT IN";
-        // resultText.classList.add("notIn");
       }
 
       if (valueMatch) {
@@ -225,8 +212,6 @@ function handleSubmit(e) {
       } else {
         suitDiv.classList.add("wrong");
       }
-      //currentGuessCell.appendChild(resultText);
-      // console.log("suit ", suitMatch, "value ", valueMatch, "all ", allMatch);
 
       if (!allMatch) {
         resultDiv.append(valueDiv, suitDiv);
@@ -234,47 +219,24 @@ function handleSubmit(e) {
 
       currentGuessCell.append(resultDiv);
     }
-
-    // currentGuessArray.forEach((guess) => {
-    //   const currentGuessCell = currentGuessRow.querySelector(`.guess${guess}`);
-
-    //   const resultDiv = document.createElement("div");
-    //   const valueDiv = document.createElement("div")
-    //   const suitDiv = document.createElement("div")
-    //   let suitMatch
-    //   let valueMatch
-    //   let allMatch
-
-    //   if (goalCardsArray.includes(guess)) {
-    //     // resultText.textContent = "IN";
-    //     // resultText.classList.add("in");
-    //     allMatch = true
-    //   } else {
-    //     goalCardsArray
-    //     // resultText.textContent = "NOT IN";
-    //     // resultText.classList.add("notIn");
-    //   }
-    //   currentGuessCell.appendChild(resultText);
-    //   currentGuessCell.classList.add("blocked", "submitted");
-    // });
   }
   currentGuessArray = [];
   guessCounter++;
   if (guessCounter === 5) {
-    alert("you have no more guesses :(");
     submitBtn.classList.add("blocked");
+    availableCardsDiv.classList.add("hidden");
+    losingDiv.classList.remove("hidden");
+    gameEnd = true;
+    appendGoalCards();
   }
 }
 
-//put the buttons in the init function? or just they should live at top
-
 const submitBtn = document.querySelector("#submitBtn");
-submitBtn.addEventListener("click", (e) => {
-  // alert if guess array length is < 5 don't take more guesses
+submitBtn.addEventListener("click", () => {
   if (currentGuessArray.length < 5) {
     alert("You need 5 cards to guess");
   } else {
-    handleSubmit(e);
+    handleSubmit();
   }
 });
 

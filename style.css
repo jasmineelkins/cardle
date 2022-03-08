@@ -1,7 +1,6 @@
 /* GENERAL ---------------------------------------- */
 * {
   margin: 0;
-  padding: 10px;
 }
 
 body {
@@ -11,10 +10,10 @@ body {
   align-items: center;
   font-family: "Megrim", "Verdana", sans-serif;
   font-variant: small-caps;
+  padding: 40px;
 }
 
 header {
-  /* background-color: rgb(151, 201, 153); */
   width: 100%;
   text-align: center;
   font-size: 60px;
@@ -29,11 +28,9 @@ header {
 
 /* GOAL CARDS ------------------------------------- */
 .goalBox {
-  /* border: 1px white solid; */
   border-radius: 10px;
   height: 100px;
   padding: 10px 0;
-  /* background-color: rgba(161, 235, 129, 0.338); */
 }
 
 #goalCardsDiv {
@@ -61,12 +58,10 @@ header {
   column-gap: 20px;
   grid-template-rows: auto;
   padding: 10px;
-  /* border: 1px pink solid; */
 }
 
 .guessedCard img {
   height: 80px;
-  /* padding-top: 0px; */
 }
 
 .guessedCard.submitted img {
@@ -83,25 +78,30 @@ header {
   text-align: center;
 }
 
-/* p {
-  text-align: center;
-  border-radius: 10px;
-  font-size: 15px;
-  padding: 6px;
-} */
-
 .results {
   border-radius: 10px;
   font-size: 15px;
-  padding: 0px;
-  /* background-color: limegreen; */
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0px;
+}
+
+.allMatch {
+  background-color: limegreen;
+  height: 18px;
+  padding: 4px 0;
+}
+
+.value,
+.suit {
+  height: 18px;
+  padding: 4px 10px;
 }
 
 .value {
   border-radius: 10px 0 0 10px;
+  border-right: 1px solid black;
 }
 
 .suit {
@@ -162,6 +162,16 @@ header {
   font-size: 40px;
 }
 
+#losingDiv {
+  background: black;
+  color: red;
+  text-shadow: 0 0 4px rgb(249, 89, 3), 0 0 4px rgba(250, 185, 22, 0.982);
+  font-family: "Press Start 2P", sans-serif;
+  border-radius: 10px;
+  padding: 30px 30px;
+  font-size: 40px;
+}
+
 .hidden {
   display: none !important;
 }
@@ -170,7 +180,7 @@ header {
 #buttonsDiv {
   display: flex;
   gap: 10px;
-  /* margin: 20px; */
+  margin: 20px;
 }
 
 button {
