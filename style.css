@@ -1,16 +1,27 @@
-/* GENERAL ---------------------------------------- */
+/* GENERAL ----------------------------------------------------------------- */
 * {
   margin: 0;
 }
 
 body {
-  background-color: darkgreen;
+  font-family: "Megrim", "Verdana", sans-serif;
+  font-variant: small-caps;
+}
+
+#content {
+  padding: 40px;
+  background-color: #006400;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: "Megrim", "Verdana", sans-serif;
-  font-variant: small-caps;
-  padding: 40px;
+}
+
+#content.contrast {
+  background-color: #333;
+}
+
+.blocked {
+  pointer-events: none;
 }
 
 header {
@@ -25,35 +36,56 @@ header {
 }
 
 #leftDiv {
-  width: 20%;
+  width: 10%;
 }
 
 #titleDiv {
   text-align: center;
 
-  width: 60%;
+  width: 80%;
 }
 
-#faqBtnDiv {
-  width: 20%;
+/* HEADER BUTTONS --------------------------------------------------------- */
+#headerBtnDiv {
+  width: 10%;
   text-align: right;
   padding: 0;
 }
 
-#faqBtn {
+#faqBtn,
+#contrastBtn {
   border-radius: 50%;
   transition: 0.5s;
 }
 
-#faqBtn:hover {
+/* #faqBtn:hover {
   transform: rotate(180deg);
+} */
+
+#faqIcon,
+#contrastIcon {
+  font-size: 14px;
+  color: rgb(241, 249, 214);
+  text-shadow: 2px 2px rgb(255, 89, 0);
 }
 
-#icon {
-  font-size: 14px;
-  color: rgb(178, 225, 203);
-  text-shadow: 2px 2px rgb(255, 89, 0);
+#faqIcon {
   padding: 12px 10px;
+}
+
+#contrastIcon {
+  padding: 12px 6px;
+}
+
+#contrastBtn.selected,
+#faqBtn.selected {
+  background-color: rgb(241, 249, 214);
+}
+
+#contrastIcon.selected,
+#faqIcon.selected {
+  color: #333;
+  text-shadow: none;
 }
 
 #faqText {
@@ -61,6 +93,7 @@ header {
   top: 150px;
   right: 110px;
   background-color: black;
+  color: rgb(241, 249, 214);
   padding: 30px;
   border: 1px solid tomato;
   border-radius: 15px;
@@ -70,11 +103,31 @@ header {
   width: 300px;
 }
 
-.blocked {
-  pointer-events: none;
+/* BUTTONS ---------------------------------------------------------------- */
+#buttonsDiv {
+  display: flex;
+  gap: 10px;
+  margin: 20px;
 }
 
-/* GOAL CARDS ------------------------------------- */
+button {
+  font-size: 20px;
+  border-radius: 10px;
+  transition: 0.5s;
+  font-family: "Megrim", "Verdana", sans-serif;
+  font-variant: small-caps;
+  background-color: rgb(210, 110, 80);
+}
+
+button:hover {
+  background-color: rgb(121, 79, 41);
+  transform: scale(0.9);
+}
+
+button.contrastMode {
+}
+
+/* GOAL CARDS -------------------------------------------------------------- */
 .goalBox {
   border-radius: 10px;
   height: 60px;
@@ -93,11 +146,36 @@ header {
   box-shadow: 0px 2px 10px white;
 }
 
-/* GUESSED CARDS ---------------------------------- */
+/* GOAL CARD ANIMATION ----------------------------------------------------- */
+.losing {
+  animation: losing 2s ease-in-out 2 alternate;
+}
+
+@keyframes losing {
+  100% {
+    transform: scale(1.2);
+    box-shadow: 0px 2px 10px rgb(252, 26, 1), 0px 2px 10px rgb(252, 118, 1),
+      0px 2px 10px rgb(252, 60, 1), 0px 2px 10px rgb(252, 172, 1);
+  }
+}
+
+.winning {
+  animation: winning 2s ease-in-out 2 alternate;
+}
+
+@keyframes winning {
+  100% {
+    transform: scale(1.4);
+    box-shadow: 0px 2px 10px rgb(252, 1, 215), 0px 2px 10px rgb(252, 1, 214),
+      0px 2px 10px rgb(1, 252, 214), 0px 2px 10px rgb(1, 252, 214);
+  }
+}
+
+/* GUESSED CARDS ----------------------------------------------------------- */
 #allGuessedCardsDiv {
   display: flex;
   flex-direction: column;
-  margin-top: 70px;
+  margin-top: 60px;
 }
 
 .guessed {
@@ -126,6 +204,7 @@ header {
   text-align: center;
 }
 
+/* GUESS RESULTS ---------------------------------------------------------------------------- */
 .results {
   border-radius: 10px;
   font-size: 15px;
@@ -139,12 +218,14 @@ header {
   background-color: limegreen;
   height: 18px;
   padding: 4px 0;
+  text-shadow: 0 0 1px black;
 }
 
 .value,
 .suit {
   height: 16px;
   padding: 4px 8px;
+  font-weight: bolder;
 }
 
 .value {
@@ -158,17 +239,36 @@ header {
 
 .correct {
   background-color: rgb(186, 216, 78);
+  text-shadow: 0 0 1px black;
 }
 
 .wrong {
   background-color: tomato;
+  text-shadow: 0 0 1px black;
 }
 
-/* AVAILABLE CARDS --------------------------------- */
+/* ACCESSIBILITY ----------------------------------------------------------- */
+.allMatch.contrast {
+  background-color: rgb(222, 247, 130);
+  text-shadow: 0 0 1px black;
+}
+
+.correct.contrast {
+  background-color: rgb(241, 249, 214);
+  text-shadow: 0 0 1px black;
+}
+
+.wrong.contrast {
+  background-color: rgb(101, 100, 100);
+  color: rgb(238, 238, 238);
+  text-shadow: 0 0 1px white;
+}
+
+/* AVAILABLE CARDS --------------------------------------------------------- */
 #availableCardsDiv {
   display: grid;
   grid-template-columns: repeat(13, 30px);
-  grid-template-rows: auto;
+  grid-template-rows: 4;
   width: 420px;
   border-radius: 12px;
   padding: 15px;
@@ -189,8 +289,9 @@ header {
   padding: 0;
 }
 
-/* WINNING ANNOUNCEMENT -------------------------- */
+/* END OF GAME ANNOUNCEMENTS ----------------------------------------------- */
 #winningDiv {
+  padding: 40px 40px;
   background: linear-gradient(
     90deg,
     rgba(255, 0, 0, 1) 0%,
@@ -205,44 +306,130 @@ header {
     rgb(143, 85, 136) 90%,
     rgba(255, 0, 0, 1) 100%
   );
+  text-shadow: 0 0 4px rgb(244, 58, 244), 0 0 4px rgba(244, 242, 244, 0.982),
+    0 0 4px rgb(250, 250, 249);
+  box-shadow: 2px 2px 4px rgb(118, 3, 249), 2px 2px 8px rgb(249, 3, 220),
+    -2px -2px 4px rgba(250, 22, 128, 0.982),
+    -2px -2px 8px rgba(250, 22, 242, 0.982);
 }
 
 #losingDiv {
+  padding: 60px 40px;
   background: black;
   color: red;
-  text-shadow: 0 0 4px rgb(249, 89, 3), 0 0 4px rgba(250, 185, 22, 0.982);
+  text-shadow: 0 0 4px rgb(249, 118, 3), 0 0 4px rgba(250, 185, 22, 0.982),
+    0 0 6px rgba(252, 215, 5, 0.982);
+  box-shadow: 2px 2px 4px rgb(249, 48, 3), 2px 2px 8px rgb(249, 138, 3),
+    -2px -2px 8px rgba(250, 87, 22, 0.982),
+    -2px -2px 8px rgba(250, 185, 22, 0.982);
   font-family: "Press Start 2P", sans-serif;
 }
 
 #winningDiv,
 #losingDiv {
-  border-radius: 15px;
-  padding: 40px 40px;
-  font-size: 40px;
+  border-radius: 40px;
+  font-size: 30px;
   margin: 80px 0 0 0;
+  text-align: center;
+  margin: 50px 0 0 0;
 }
 
 .hidden {
   display: none !important;
 }
 
-/* BUTTONS --------------------------------------- */
-#buttonsDiv {
-  display: flex;
-  gap: 10px;
-  margin: 20px;
+/* WINNING ANIMATION ------------------------------------------------------ */
+.flash {
+  animation-name: flash;
+  animation-duration: 1.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-play-state: running;
 }
 
-button {
-  font-size: 20px;
-  border-radius: 10px;
-  transition: 0.5s;
-  font-family: "Megrim", "Verdana", sans-serif;
-  font-variant: small-caps;
-  background-color: rgb(210, 110, 80);
+@keyframes flash {
+  from {
+    color: rgb(122, 2, 128);
+  }
+  to {
+    color: rgb(247, 15, 150);
+  }
 }
 
-button:hover {
-  background-color: rgb(121, 79, 41);
-  transform: scale(0.9);
+/* LOSING ANIMATION ------------------------------------------------------- */
+
+.title {
+  position: relative;
+  text-align: center;
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+}
+
+.title .text {
+  font-family: "Press Start 2P", sans-serif;
+  font-weight: 400;
+  font-size: 60px;
+  line-height: 1;
+}
+
+.title .write .word {
+  color: hsl(9, 97%, 49%);
+  text-shadow: 0 0 4px rgb(249, 118, 3), 0 0 4px rgba(250, 185, 22, 0.982),
+    0 0 6px rgba(252, 215, 5, 0.982);
+  transform-style: preserve-3d;
+  animation: write linear both;
+}
+
+.title .laser {
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  /* To avoid the blur getting masked by the clip-path we had to duplicate the element */
+  filter: blur(2px) contrast(10);
+  pointer-events: none;
+}
+
+.title .laser .word {
+  display: inline-block;
+}
+
+.title .laser .word {
+  color: hsl(0, 100%, 75%);
+  text-shadow: 0 0 0.1em currentColor;
+  transform: translateZ(5px);
+  animation: laser linear both;
+}
+
+.title .write .word,
+.title .laser .word {
+  animation-duration: 5s;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+}
+
+.title:hover .word {
+  animation-play-state: paused;
+}
+
+@keyframes write {
+  from,
+  0% {
+    clip-path: polygon(-20% 0%, -15% 0%, -15% 100%, -20% 100%);
+  }
+  70%,
+  to {
+    clip-path: polygon(-15% 0%, 120% 0%, 120% 100%, -15% 100%);
+  }
+}
+
+@keyframes laser {
+  from,
+  0% {
+    clip-path: polygon(-20% 0%, -15% 0%, -15% 100%, -20% 100%);
+  }
+  70%,
+  to {
+    clip-path: polygon(115% 0%, 120% 0%, 120% 100%, 115% 100%);
+  }
 }

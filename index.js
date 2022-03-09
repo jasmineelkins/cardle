@@ -5,6 +5,8 @@ const availableCardsDiv = document.getElementById("availableCardsDiv");
 let currentGuessArray = [];
 let guessCounter = 0;
 let gameEnd = false;
+let losing = true;
+let contrastMode = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   appendGoalCards();
@@ -73,9 +75,16 @@ function appendGoalCards() {
     if (!gameEnd) {
       cardImg.src = "assets/card.png";
       thisGoal.append(cardImg);
-    } else {
+    } else if (losing) {
       cardImg.src = goalCardImagesArray[i];
       thisGoal.replaceChildren(cardImg);
+      cardImg.classList.add("losing");
+      cardImg.style = "animation-delay: " + i * 0.2 + "s";
+    } else if (!losing) {
+      cardImg.src = goalCardImagesArray[i];
+      thisGoal.replaceChildren(cardImg);
+      cardImg.classList.add("winning");
+      cardImg.style = "animation-delay: " + i * 0.2 + "s";
     }
   }
 }
@@ -173,7 +182,12 @@ function handleSubmit() {
       suitMatch = true;
       valueMatch = true;
       resultDiv.textContent = "QARD!";
-      resultDiv.classList.add("allMatch");
+
+      if (!contrastMode) {
+        resultDiv.classList.add("allMatch");
+      } else {
+        resultDiv.classList.add("allMatch", "contrast");
+      }
     } else {
       let i = 0;
 
@@ -194,15 +208,31 @@ function handleSubmit() {
     }
 
     if (valueMatch) {
-      valueDiv.classList.add("correct");
+      if (!contrastMode) {
+        valueDiv.classList.add("correct");
+      } else {
+        valueDiv.classList.add("correct", "contrast");
+      }
     } else {
-      valueDiv.classList.add("wrong");
+      if (!contrastMode) {
+        valueDiv.classList.add("wrong");
+      } else {
+        valueDiv.classList.add("wrong", "contrast");
+      }
     }
 
     if (suitMatch) {
-      suitDiv.classList.add("correct");
+      if (!contrastMode) {
+        suitDiv.classList.add("correct");
+      } else {
+        suitDiv.classList.add("correct", "contrast");
+      }
     } else {
-      suitDiv.classList.add("wrong");
+      if (!contrastMode) {
+        suitDiv.classList.add("wrong");
+      } else {
+        suitDiv.classList.add("wrong", "contrast");
+      }
     }
 
     if (!allMatch) {
@@ -212,7 +242,8 @@ function handleSubmit() {
     currentGuessCell.append(resultDiv);
   }
   if (commonCards.length === 5) {
-    endGame("win");
+    losing = false;
+    endGame();
   }
 
   currentGuessArray = [];
@@ -224,15 +255,16 @@ function handleSubmit() {
 }
 
 // Game End Function
-function endGame(result = "lose") {
+function endGame() {
   submitBtn.classList.add("hidden");
   giveUpBtn.classList.add("hidden");
   availableCardsDiv.classList.add("hidden");
   gameEnd = true;
   appendGoalCards();
   window.scrollTo(0, 0);
+  Splitting();
 
-  if (result !== "lose") {
+  if (!losing) {
     const winningDiv = document.querySelector("#winningDiv");
     winningDiv.classList.remove("hidden");
   } else {
@@ -240,6 +272,7 @@ function endGame(result = "lose") {
     losingDiv.classList.remove("hidden");
   }
 }
+const body = document.getElementsByTagName("body");
 
 // Buttons & Event Listeners
 function populateButtons() {
@@ -247,6 +280,27 @@ function populateButtons() {
   faqBtn.addEventListener("click", () => {
     const faqText = document.querySelector("#faqText");
     faqText.classList.toggle("hidden");
+  });
+
+  contrastBtn.addEventListener("click", () => {
+    const contrastBtn = document.querySelector("#contrastBtn");
+    const contrastIcon = document.querySelector("#contrastIcon");
+    const faqIcon = document.querySelector("#faqIcon");
+    const content = document.querySelector("#content");
+    // const allButtons = document.getElementsByTagName("button");
+
+    contrastBtn.classList.toggle("selected");
+    contrastIcon.classList.toggle("selected");
+    content.classList.toggle("contrast");
+    faqBtn.classList.toggle("selected");
+    faqIcon.classList.toggle("selected");
+    // allButtons.classList.add("selected");
+
+    if (!contrastMode) {
+      contrastMode = true;
+    } else {
+      contrastMode = false;
+    }
   });
 
   const submitBtn = document.querySelector("#submitBtn");
@@ -267,6 +321,7 @@ function populateButtons() {
 
   const giveUpBtn = document.querySelector("#giveUpBtn");
   giveUpBtn.addEventListener("click", () => {
+    losing = true;
     endGame();
   });
 }
