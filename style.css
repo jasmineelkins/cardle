@@ -70,6 +70,18 @@ header {
   width: 300px;
 }
 
+#hintDiv {
+  background-color: black;
+  padding: 30px;
+  border: 1px solid tomato;
+  border-radius: 15px;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  font-size: 18px;
+  color: rgb(178, 225, 203);
+  text-shadow: none;
+  width: 300px;
+}
+
 .blocked {
   pointer-events: none;
 }
