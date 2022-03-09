@@ -34,20 +34,6 @@ header {
   width: 60%;
 }
 
-#faqBtnDiv {
-  width: 20%;
-  text-align: right;
-  padding: 0;
-}
-
-#faqBtn {
-  border-radius: 50%;
-  transition: 0.5s;
-}
-
-#faqBtn:hover {
-  transform: rotate(180deg);
-}
 
 #icon {
   font-size: 14px;
@@ -56,19 +42,7 @@ header {
   padding: 12px 10px;
 }
 
-#faqText {
-  position: absolute;
-  top: 150px;
-  right: 110px;
-  background-color: black;
-  padding: 30px;
-  border: 1px solid tomato;
-  border-radius: 15px;
-  font-family: "Trebuchet MS", Arial, sans-serif;
-  font-size: 18px;
-  text-shadow: none;
-  width: 300px;
-}
+
 
 #hintDiv {
   background-color: black;
@@ -191,6 +165,9 @@ header {
   transition: 0.5s;
   padding: 0;
 }
+.guessableCards.eliminated{
+  filter: invert(50%);
+}
 
 .guessableCards:hover {
   transform: scale(1.1);
@@ -199,6 +176,7 @@ header {
 .guessableCards img {
   height: 80px;
   padding: 0;
+  /* filter: invert(50%) */
 }
 
 /* WINNING ANNOUNCEMENT -------------------------- */
@@ -216,25 +194,25 @@ header {
     rgba(186, 12, 248, 1) 80%,
     rgb(143, 85, 136) 90%,
     rgba(255, 0, 0, 1) 100%
-  );
-}
-
-#losingDiv {
-  background: black;
-  color: red;
-  text-shadow: 0 0 4px rgb(249, 89, 3), 0 0 4px rgba(250, 185, 22, 0.982);
-  font-family: "Press Start 2P", sans-serif;
-}
-
-#winningDiv,
-#losingDiv {
-  border-radius: 15px;
-  padding: 40px 40px;
-  font-size: 40px;
-  margin: 80px 0 0 0;
-}
-
-.hidden {
+    );
+  }
+  
+  #losingDiv {
+    background: black;
+    color: red;
+    text-shadow: 0 0 4px rgb(249, 89, 3), 0 0 4px rgba(250, 185, 22, 0.982);
+    font-family: "Press Start 2P", sans-serif;
+  }
+  
+  #winningDiv,
+  #losingDiv {
+    border-radius: 15px;
+    padding: 40px 40px;
+    font-size: 40px;
+    margin: 80px 0 0 0;
+  }
+  
+  .hidden {
   display: none !important;
 }
 
@@ -257,4 +235,41 @@ button {
 button:hover {
   background-color: rgb(121, 79, 41);
   transform: scale(0.9);
+}
+
+/* FAQ ------------------------------------------*/
+#faqBtnDiv {
+  width: 20%;
+  text-align: right;
+  padding: 0;
+}
+
+#faqBtn {
+  border-radius: 50%;
+  transition: 0.5s;
+}
+
+#faqBtn:hover {
+  transform: rotate(180deg);
+}
+
+#faqText {
+  position: absolute;
+  top: 150px;
+  right: 110px;
+  background-color: black;
+  padding: 30px;
+  border: 1px solid tomato;
+  border-radius: 15px;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  font-size: 18px;
+  text-shadow: none;
+  width: 300px;
+}
+
+.faqImg{ 
+  /* NOTE need to fix the float so text is next to each image */
+  border-radius: 10px;
+  height: 80px;
+  /* vertical-align: middle; */
 }

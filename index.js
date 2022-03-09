@@ -106,7 +106,7 @@ function addGuess(e) {
   //if a card gets clicked and it is in a cell that is less than currentguessarray.length - 1, the next card needs to be appended to that cell, then return to .guess${cGA.length}
   //if the first child is a guessed card, move on the next sibling that does not have .guessedcard in classlist
   const guessedCardRow = document.querySelector(`#guessedCards${guessCounter}`);
-  console.log( `#cell${guessCounter}${rowGuessCounter}`)
+  //console.log( `#cell${guessCounter}${rowGuessCounter}`)
   let guessedCardCell = guessedCardRow.querySelector(
     `#cell${guessCounter}${rowGuessCounter}`
   );
@@ -115,14 +115,14 @@ function addGuess(e) {
     guessedCardCell = guessedCardCell.previousSibling
   }
   const inputCellNum = guessedCardCell.id[5]
-  console.log(inputCellNum)
+  //console.log(inputCellNum)
 
   const guessedCardImage = document.createElement("img");
   guessedCardImage.src = e.target.src;
 
   const currentID = e.target.id;
   currentGuessArray[inputCellNum] = currentID;
-  console.log(currentGuessArray)
+  //console.log(currentGuessArray)
   guessedCardCell.classList.add(`guess${currentID}`, `guessedCard`);
 
   //REMOVE CARD IF CLICKED
@@ -132,7 +132,7 @@ function addGuess(e) {
     const indexToRemove = currentGuessArray.indexOf(currentID);
     //currentGuessArray.splice(indexToRemove, 1);
     currentGuessArray[indexToRemove] = "none";
-    console.log(currentGuessArray)
+    //console.log(currentGuessArray)
     e.target.remove();
     rowGuessCounter --;
   });
