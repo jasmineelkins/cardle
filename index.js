@@ -162,6 +162,7 @@ function handleSubmit() {
 
     const currentGuessValue = currentGuessArray[i][0];
     const currentGuessSuit = currentGuessArray[i][1];
+    const matchInGuessable = document.getElementById(currentGuessArray[i])
     let suitIcon;
 
     currentGuessCell.classList.add("blocked", "submitted");
@@ -196,8 +197,14 @@ function handleSubmit() {
       suitMatch = true;
       valueMatch = true;
       resultDiv.textContent = "QARD!";
+      
+      //console.log(matchInGuessable)
+      matchInGuessable.classList.add("qard")
       resultDiv.classList.add("allMatch");
     } else {
+      //const matchInGuessable = document.getElementById(currentGuessArray[i])
+      //console.log(matchInGuessable)
+      matchInGuessable.classList.add("eliminated")
       let i = 0;
 
       while (!valueMatch && i < 5) {
@@ -231,7 +238,11 @@ function handleSubmit() {
     if (!allMatch) {
       resultDiv.append(valueDiv, suitDiv);
     }
-
+    // if(!suitMatch || !valueMatch){
+    //   const matchInGuessable = document.getElementById(currentGuessArray[i])
+    //   console.log(matchInGuessable)
+    //   matchInGuessable.classList.add("eliminated")
+    // }
     currentGuessCell.append(resultDiv);
   }
   if (commonCards.length === 5) {

@@ -165,9 +165,6 @@ header {
   transition: 0.5s;
   padding: 0;
 }
-.guessableCards.eliminated{
-  filter: invert(50%);
-}
 
 .guessableCards:hover {
   transform: scale(1.1);
@@ -176,9 +173,17 @@ header {
 .guessableCards img {
   height: 80px;
   padding: 0;
-  /* filter: invert(50%) */
+  filter: brightness(85%)
 }
 
+.guessableCards img.eliminated{
+  filter: invert(75%);
+}
+.guessableCards img.qard{
+  filter: brightness(190%);
+  /* filter: hue-rotate(180deg); */
+  /* filter: invert(77%) sepia(62%) saturate(6242%) hue-rotate(84deg) brightness(116%) contrast(125%) */
+}
 /* WINNING ANNOUNCEMENT -------------------------- */
 #winningDiv {
   background: linear-gradient(
