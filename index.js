@@ -213,14 +213,52 @@ function handleSubmit() {
   }
   if (commonCards.length === 5) {
     endGame("win");
+  } else if (guessCounter === 5) {
+    endGame();
   }
 
   currentGuessArray = [];
   guessCounter++;
 
-  if (guessCounter === 5) {
-    endGame();
-  }
+  
+}
+
+function makeHint(){
+  let spadeString = ' spades'
+  let clubString = " clubs"
+  let diamondString = " diamonds"
+  let heartString = " hearts"
+
+  let spadeNum = 0
+  let clubNum = 0
+  let diamondNum = 0
+  let heartNum = 0
+
+  goalCardsArray.forEach( (goalCard) => {
+    switch (goalCard[1]) {
+      case 'S' : spadeNum += 1; 
+      break;
+      case 'C' : clubNum += 1;
+      break;
+      case "D": diamondNum += 1;
+      break;
+      case "H": heartNum += 1;
+      break;
+    }
+  })
+
+  if (spadeNum === 1){ spadeString = " spade"}
+  if (clubNum === 1){clubString = " club"}
+  if (diamondNum === 1){diamondString = " diamond"}
+  if (heartNum === 1){heartString = " heart"}
+
+  console.log("spades", spadeNum, "clubs ", clubNum, " diamonds ", diamondNum, " hearts ", heartNum)
+
+  const hintArray = [(spadeNum + spadeString), (clubNum + clubString), (diamondNum + diamondString), (heartNum + heartString)]
+  const randomIndex = Math.floor(Math.random()*hintArray.length)
+  const hint = `This QARDLE has ${hintArray[randomIndex]}.`
+  return hint
+
 }
 
 // Game End Function
@@ -269,4 +307,11 @@ function populateButtons() {
   giveUpBtn.addEventListener("click", () => {
     endGame();
   });
+
+  const hintBtn = document.getElementById("hintBtn");
+  hintBtn.addEventListener("click", () => {
+    const hintText = document.querySelector("#hintDiv")
+    hintText.textContent = makeHint()
+    hintText.classList.toggle("hidden")
+  })
 }
