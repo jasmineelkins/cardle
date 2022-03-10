@@ -125,12 +125,17 @@ function createGuessGrid() {
   }
 }
 
+const removeGuessCard = (e, currentID) => {
+  const removedBox = e.target.parentNode;
+  removedBox.classList.remove("guessedCard", `guess${currentID}`);
+  const indexToRemove = currentGuessArray.indexOf(currentID);
+  currentGuessArray[indexToRemove] = "none";
+  e.target.remove();
+  rowGuessCounter--;
+};
+
 function addGuess(e) {
-  //console.log(e)
-  //if a card gets clicked and it is in a cell that is less than currentguessarray.length - 1, the next card needs to be appended to that cell, then return to .guess${cGA.length}
-  //if the first child is a guessed card, move on the next sibling that does not have .guessedcard in classlist
   const guessedCardRow = document.querySelector(`#guessedCards${guessCounter}`);
-  //console.log( `#cell${guessCounter}${rowGuessCounter}`)
   let guessedCardCell = guessedCardRow.querySelector(
     `#cell${guessCounter}${rowGuessCounter}`
   );
@@ -139,27 +144,16 @@ function addGuess(e) {
     guessedCardCell = guessedCardCell.previousSibling;
   }
   const inputCellNum = guessedCardCell.id[5];
-  //console.log(inputCellNum)
-
-  const guessedCardImage = document.createElement("img");
-  guessedCardImage.src = e.target.src;
-
+  const guessedCardImage = createImgElement(e.target.src);
   const currentID = e.target.id;
   currentGuessArray[inputCellNum] = currentID;
-  //console.log(currentGuessArray)
+
   guessedCardCell.classList.add(`guess${currentID}`, `guessedCard`);
 
-  //REMOVE CARD IF CLICKED
-  guessedCardImage.addEventListener("click", (e) => {
-    const removedBox = e.target.parentNode;
-    removedBox.classList.remove("guessedCard", `guess${currentID}`);
-    const indexToRemove = currentGuessArray.indexOf(currentID);
-    //currentGuessArray.splice(indexToRemove, 1);
-    currentGuessArray[indexToRemove] = "none";
-    //console.log(currentGuessArray)
-    e.target.remove();
-    rowGuessCounter--;
-  });
+  //REMOVES CARD FROM DOM & GUESS ARRAY WHEN CLICKED
+  guessedCardImage.addEventListener("click", (e) =>
+    removeGuessCard(e, currentID)
+  );
 
   guessedCardCell.append(guessedCardImage);
   rowGuessCounter++;
@@ -222,7 +216,6 @@ function handleSubmit() {
       valueMatch = true;
       resultDiv.textContent = "QARD!";
 
-      //console.log(matchInGuessable)
       matchInGuessable.classList.add("qard");
       resultDiv.classList.add("allMatch");
 
@@ -232,8 +225,6 @@ function handleSubmit() {
         resultDiv.classList.add("allMatch", "contrast");
       }
     } else {
-      //const matchInGuessable = document.getElementById(currentGuessArray[i])
-      //console.log(matchInGuessable)
       matchInGuessable.classList.add("eliminated");
       let i = 0;
 
@@ -284,11 +275,7 @@ function handleSubmit() {
     if (!allMatch) {
       resultDiv.append(valueDiv, suitDiv);
     }
-    // if(!suitMatch || !valueMatch){
-    //   const matchInGuessable = document.getElementById(currentGuessArray[i])
-    //   console.log(matchInGuessable)
-    //   matchInGuessable.classList.add("eliminated")
-    // }
+
     currentGuessCell.append(resultDiv);
   }
   if (commonCards.length === 5) {
