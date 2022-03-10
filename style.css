@@ -401,7 +401,6 @@ button:hover {
 }
 
 /* LOSING ANIMATION ------------------------------------------------------- */
-
 .title {
   position: relative;
   text-align: center;
@@ -474,5 +473,135 @@ button:hover {
   70%,
   to {
     clip-path: polygon(115% 0%, 120% 0%, 120% 100%, 115% 100%);
+  }
+}
+
+/* MEDIA QUERIES ----------------------------------------------------------- */
+@media only screen and (max-width: 600px) {
+  #content {
+    /* padding: 20px; */
+    /* background-color: lightblue; */
+  }
+
+  header {
+    font-size: 25px;
+  }
+  /* HEADER & BUTTONS ----------------------------- */
+  #faqIcon,
+  #contrastIcon {
+    font-size: 10px;
+    color: rgb(241, 249, 214);
+    text-shadow: 2px 2px rgb(255, 89, 0);
+  }
+
+  #faqIcon {
+    padding: 12px 8px;
+  }
+
+  #contrastIcon {
+    padding: 12px 6px;
+  }
+
+  #faqText {
+    top: 130px;
+    right: 90px;
+    font-size: 14px;
+    width: 250px;
+    padding: 10px;
+  }
+
+  .faqImg {
+    height: 50px;
+  }
+
+  /* GOAL CARDS ------------------------------------- */
+  .goalBox {
+    border-radius: 10px;
+    height: 50px;
+    padding: 10px 0;
+  }
+
+  #goalCardsDiv {
+    display: flex;
+    gap: 20px;
+  }
+
+  .cardBack {
+    height: 100%;
+    padding: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px white;
+  }
+
+  /* GUESSED CARDS ---------------------------------- */
+  #allGuessedCardsDiv {
+    margin-top: 50px;
+  }
+
+  .guessed {
+    /* grid-template-columns: repeat(5, 60px); */
+    column-gap: 10px;
+    padding: 8px;
+  }
+
+  .guessedCard img {
+    height: 70px;
+  }
+
+  .guessedCard.submitted img {
+    height: 50px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  .guessBox {
+    box-shadow: 0px 2px 10px white;
+    border-radius: 10px;
+    height: 70px;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  /* GUESS RESULTS ------------------------------------ */
+  .results {
+    border-radius: 10px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+  }
+
+  .allMatch {
+    border-radius: 4px;
+    height: 12px;
+    padding: 4px 0;
+  }
+
+  .value,
+  .suit {
+    height: 16px;
+    padding: 2px 6px;
+  }
+
+  .value {
+    border-radius: 6px 0 0 6px;
+    border-right: 1px solid black;
+  }
+
+  .suit {
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* AVAILABLE CARDS --------------------------------- */
+  #availableCardsDiv {
+    grid-template-columns: repeat(13, 22px);
+    width: 320px;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .guessableCards img {
+    height: 80px;
   }
 }
