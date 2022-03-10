@@ -324,7 +324,7 @@ button:hover {
 }
 
 .guessableCards img.eliminated {
-  filter: invert(75%);
+  filter: brightness(75%);
 }
 .guessableCards img.qard {
   filter: brightness(190%);
