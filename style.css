@@ -16,7 +16,7 @@ body {
   align-items: center;
 }
 
-#content.contrast {
+#content.selected {
   background-color: #333;
 }
 
@@ -287,20 +287,20 @@ button.selected {
 }
 
 /* ACCESSIBILITY ----------------------------------------------------------- */
-.allMatch.contrast {
+.contrast .allMatch {
   background-color: rgb(222, 247, 130);
   text-shadow: 0 0 1px black;
 }
 
-.correct.contrast {
-  background-color: rgb(241, 249, 214);
-  text-shadow: 0 0 1px black;
-}
-
-.wrong.contrast {
+.contrast .wrong {
   background-color: rgb(101, 100, 100);
   color: rgb(238, 238, 238);
   text-shadow: 0 0 1px white;
+}
+
+.contrast .correct {
+  background-color: rgb(241, 249, 214);
+  text-shadow: 0 0 1px black;
 }
 
 /* AVAILABLE CARDS --------------------------------------------------------- */
