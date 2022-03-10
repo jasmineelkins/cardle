@@ -45,6 +45,7 @@ header {
   width: 80%;
 }
 
+
 /* HEADER BUTTONS --------------------------------------------------------- */
 #headerBtnDiv {
   width: 10%;
@@ -61,6 +62,7 @@ header {
 /* #faqBtn:hover {
   transform: rotate(180deg);
 } */
+
 
 #faqIcon,
 #contrastIcon {
@@ -99,6 +101,7 @@ header {
   border-radius: 15px;
   font-family: "Trebuchet MS", Arial, sans-serif;
   font-size: 18px;
+  color: rgb(178, 225, 203);
   text-shadow: none;
   width: 300px;
 }
@@ -287,6 +290,16 @@ button.contrastMode {
 .guessableCards img {
   height: 80px;
   padding: 0;
+  filter: brightness(85%)
+}
+
+.guessableCards img.eliminated{
+  filter: invert(75%);
+}
+.guessableCards img.qard{
+  filter: brightness(190%);
+  /* filter: hue-rotate(180deg); */
+  /* filter: invert(77%) sepia(62%) saturate(6242%) hue-rotate(84deg) brightness(116%) contrast(125%) */
 }
 
 /* END OF GAME ANNOUNCEMENTS ----------------------------------------------- */
@@ -432,4 +445,41 @@ button.contrastMode {
   to {
     clip-path: polygon(115% 0%, 120% 0%, 120% 100%, 115% 100%);
   }
+}
+
+/* FAQ ------------------------------------------*/
+#faqBtnDiv {
+  width: 20%;
+  text-align: right;
+  padding: 0;
+}
+
+#faqBtn {
+  border-radius: 50%;
+  transition: 0.5s;
+}
+
+#faqBtn:hover {
+  transform: rotate(180deg);
+}
+
+#faqText {
+  position: absolute;
+  top: 150px;
+  right: 110px;
+  background-color: black;
+  padding: 30px;
+  border: 1px solid tomato;
+  border-radius: 15px;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  font-size: 18px;
+  text-shadow: none;
+  width: 300px;
+}
+
+.faqImg{ 
+  /* NOTE need to fix the float so text is next to each image */
+  border-radius: 10px;
+  height: 80px;
+  /* vertical-align: middle; */
 }
