@@ -1,3 +1,4 @@
+const BASE_URL = "https://deckofcardsapi.com/api/deck";
 const goalCardsArray = [];
 const goalCardImagesArray = [];
 const availableCardsDiv = document.getElementById("availableCardsDiv");
@@ -17,45 +18,79 @@ document.addEventListener("DOMContentLoaded", () => {
   populateButtons();
 });
 
-function setAvailableCards() {
-  fetch("https://deckofcardsapi.com/api/deck/new/")
-    .then((response) => response.json())
-    .then((data) => {
-      const deckID = data.deck_id;
-      fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
-        .then((response) => response.json())
-        .then((data) => {
-          data.cards.forEach((element) => {
-            const tempCard = document.createElement("div");
-            tempCard.className = "guessableCards";
+const getFullDeck = async (deckID) => {
+  let response = await fetch(`${BASE_URL}/${deckID}/draw/?count=52`);
+  let data = await response.json();
+  data.cards.forEach((element) => {
+    const tempCard = document.createElement("div");
+    tempCard.className = "guessableCards";
 
-            const tempImg = document.createElement("img");
-            tempImg.src = element.images.png;
-            tempImg.addEventListener("click", (e) => {
-              //console.log(currentGuessArray.includes("none"))
-              if (currentGuessArray.includes("none")) {
-                //if there are no empty strings in array
-                // !currentGuessArray.includes("")
-                if (!currentGuessArray.includes(element.code)) {
-                  addGuess(e);
-                }
-              }
-            });
-            tempImg.id = element.code;
-            tempCard.append(tempImg);
-            availableCardsDiv.appendChild(tempCard);
-          });
-        });
+    const tempImg = document.createElement("img");
+    tempImg.src = element.images.png;
+    tempImg.addEventListener("click", (e) => {
+      console.log(e.target);
+      if (currentGuessArray.includes("none")) {
+        //if there are no empty strings in array
+
+        if (!currentGuessArray.includes(element.code)) {
+          addGuess(e);
+        }
+      }
     });
-}
+    tempImg.id = element.code;
+    tempCard.append(tempImg);
+    availableCardsDiv.appendChild(tempCard);
+  });
+};
+
+const setAvailableCards = async () => {
+  let response = await fetch(`${BASE_URL}/new/`);
+  let data = await response.json();
+  const deckID = data.deck_id;
+
+  getFullDeck(deckID);
+};
+
+//
+// function setAvailableCards() {
+//   fetch("https://deckofcardsapi.com/api/deck/new/")
+//     .then((response) => response.json())
+//     .then((data) => {
+//       const deckID = data.deck_id;
+//       fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
+//         .then((response) => response.json())
+//         .then((data) => {
+//           data.cards.forEach((element) => {
+//             const tempCard = document.createElement("div");
+//             tempCard.className = "guessableCards";
+
+//             const tempImg = document.createElement("img");
+//             tempImg.src = element.images.png;
+//             tempImg.addEventListener("click", (e) => {
+//               //console.log(currentGuessArray.includes("none"))
+//               if (currentGuessArray.includes("none")) {
+//                 //if there are no empty strings in array
+//                 // !currentGuessArray.includes("")
+//                 if (!currentGuessArray.includes(element.code)) {
+//                   addGuess(e);
+//                 }
+//               }
+//             });
+//             tempImg.id = element.code;
+//             tempCard.append(tempImg);
+//             availableCardsDiv.appendChild(tempCard);
+//           });
+//         });
+//     });
+// }
 
 function setGoalCards() {
-  fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
+  fetch(`${BASE_URL}/new/shuffle/?deck_count=1`)
     .then((response) => response.json())
     .then((data) => {
       const goalDeckID = data.deck_id;
 
-      fetch(`https://deckofcardsapi.com/api/deck/${goalDeckID}/draw/?count=5`)
+      fetch(`${BASE_URL}/${goalDeckID}/draw/?count=5`)
         .then((response) => response.json())
         .then((data) => {
           data.cards.forEach((card) => {
