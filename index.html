@@ -12,6 +12,18 @@
     />
     <link rel="stylesheet" href="style.css" />
 
+    <!-- LIBRARY FOR ANIMATION -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/splitting/dist/splitting.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/splitting/dist/splitting-cells.css"
+    />
+    <script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
+    <!--  -->
+
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Gabriela&family=Genos&family=Megrim&display=swap");
       @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
@@ -25,16 +37,48 @@
   </head>
 
   <body>
-    <header>
-      <div id="leftDiv"></div>
-      <div id="titleDiv">
-        <h1>Qardle</h1>
+    <div id="content">
+      <header>
+        <div id="leftDiv"></div>
+        <div id="titleDiv">
+          <h1>Qardle</h1>
+        </div>
+
+        <div id="headerBtnDiv">
+          <button id="contrastBtn">
+            <i class="fas fa-eye-slash" id="contrastIcon"></i>
+          </button>
+          <button id="faqBtn">
+            <i class="fas fa-question" id="faqIcon"></i>
+          </button>
+        </div>
+
+        <div id="faqText" class="hidden">
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          since the 1500s, when an unknown printer took a galley of type and
+          scrambled it to make a type specimen book. It has survived not only
+          five centuries, but also the leap into electronic typesetting,
+          remaining essentially unchanged. It was popularised in the 1960s with
+          the release of Letraset sheets containing Lorem Ipsum passages, and
+          more recently with desktop publishing software like Aldus PageMaker
+          including versions of Lorem Ipsum.
+        </div>
+      </header>
+
+      <div id="goalCardsDiv">
+        <div id="goal0" class="goalBox"></div>
+        <div id="goal1" class="goalBox"></div>
+        <div id="goal2" class="goalBox"></div>
+        <div id="goal3" class="goalBox"></div>
+        <div id="goal4" class="goalBox"></div>
       </div>
 
-      <div id="faqBtnDiv">
-        <button id="faqBtn">
-          <i class="fas fa-question" id="icon"></i>
-        </button>
+      <div id="winningDiv" class="flash hidden">
+        <h1>
+          Congratulations! <br />
+          You win
+        </h1>
       </div>
 
       <div id="faqText" class="hidden">
@@ -60,20 +104,21 @@
         The cards in the clickable deck will also change color to reflect your guesses - cards that do not appear in the Qardle will darken, Qards will brighten. <br>
         
         If you get stuck, try clicking the hint button!
+
+      <div id="losingDiv" class="title hidden">
+        <span class="text write" data-splitting="lines"> YOU LOSE </span>
+        <span aria-hidden="true" class="text laser" data-splitting="lines">
+          YOU LOSE
+        </span>
       </div>
-    </header>
-    <div id="goalCardsDiv">
-      <div id="goal0" class="goalBox"></div>
-      <div id="goal1" class="goalBox"></div>
-      <div id="goal2" class="goalBox"></div>
-      <div id="goal3" class="goalBox"></div>
-      <div id="goal4" class="goalBox"></div>
-    </div>
 
-    <div id="winningDiv" class="hidden">Congratulations! You win</div>
-    <div id="losingDiv" class="hidden">YOU LOSE</div>
+      <div id="allGuessedCardsDiv"></div>
 
-    <div id="allGuessedCardsDiv"></div>
+      <div id="buttonsDiv">
+        <button id="submitBtn" class="btn">Submit</button>
+        <button id="resetBtn" class="btn">Reset</button>
+        <button id="giveUpBtn" class="btn">Give Up?</button>
+      </div>
 
     <div id="buttonsDiv">
       <button id="submitBtn" class="btn">Submit</button>
@@ -84,5 +129,9 @@
     <div id="hintDiv" class="hidden"></div>
 
     <div id="availableCardsDiv"></div>
+
+      <div id="availableCardsDiv"></div>
+    </div>
+
   </body>
 </html>
