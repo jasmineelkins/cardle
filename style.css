@@ -16,10 +16,6 @@ body {
   align-items: center;
 }
 
-#content.selected {
-  background-color: #333;
-}
-
 .blocked {
   pointer-events: none;
 }
@@ -58,10 +54,6 @@ header {
   transition: 0.5s;
 }
 
-/* #faqBtn:hover {
-  transform: rotate(180deg);
-} */
-
 #faqIcon,
 #contrastIcon {
   font-size: 14px;
@@ -77,17 +69,7 @@ header {
   padding: 12px 6px;
 }
 
-#contrastBtn.selected,
-#faqBtn.selected {
-  background-color: rgb(241, 249, 214);
-}
-
-#contrastIcon.selected,
-#faqIcon.selected {
-  color: #333;
-  text-shadow: none;
-}
-
+/* UPDATE FAQ SIZE BASED ON SCREEN SIZE */
 #faqText {
   position: absolute;
   top: 150px;
@@ -119,10 +101,8 @@ header {
 }
 
 .faqImg {
-  /* NOTE need to fix the float so text is next to each image */
   border-radius: 10px;
   height: 80px;
-  /* vertical-align: middle; */
 }
 
 /* BUTTONS ---------------------------------------------------------------- */
@@ -144,12 +124,6 @@ button {
 button:hover {
   background-color: rgb(121, 79, 41);
   transform: scale(0.9);
-}
-
-button.selected {
-  background-color: rgb(241, 249, 214);
-  color: #333;
-  text-shadow: none;
 }
 
 #hintDiv {
@@ -287,6 +261,21 @@ button.selected {
 }
 
 /* ACCESSIBILITY ----------------------------------------------------------- */
+#content.contrast {
+  background-color: #333;
+}
+
+.contrast #contrastBtn,
+.contrast #faqBtn {
+  background-color: rgb(241, 249, 214);
+}
+
+.contrast #contrastIcon,
+.contrast #faqIcon {
+  color: #333;
+  text-shadow: none;
+}
+
 .contrast .allMatch {
   background-color: rgb(222, 247, 130);
   text-shadow: 0 0 1px black;
@@ -299,6 +288,11 @@ button.selected {
 }
 
 .contrast .correct {
+  background-color: rgb(241, 249, 214);
+  text-shadow: 0 0 1px black;
+}
+
+.contrast .btn {
   background-color: rgb(241, 249, 214);
   text-shadow: 0 0 1px black;
 }

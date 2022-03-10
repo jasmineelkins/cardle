@@ -14,7 +14,6 @@ let hintClicked = false;
 document.addEventListener("DOMContentLoaded", () => {
   setGoalCards();
   appendGoalCards();
-  // createHintArray();
   setAvailableCards();
   createGuessGrid();
   populateButtons();
@@ -219,13 +218,6 @@ function handleSubmit() {
     let valueMatch = false;
     let allMatch = false;
 
-    // CAN BE REMOVED ***
-    if (contrastMode) {
-      resultDiv.classList.add("contrast");
-      valueDiv.classList.add("contrast");
-      suitDiv.classList.add("contrast");
-    }
-
     currentGuessCell.classList.add("blocked", "submitted");
     handleResultStyling(suitDiv, currentGuessSuit, valueDiv, currentGuessValue);
 
@@ -376,24 +368,8 @@ function populateButtons() {
   });
 
   contrastBtn.addEventListener("click", () => {
-    const contrastIcon = document.querySelector("#contrastIcon");
-    const faqIcon = document.querySelector("#faqIcon");
     const content = document.querySelector("#content");
-
     content.classList.toggle("contrast");
-
-    // FIX THIS ***
-    [
-      contrastBtn,
-      contrastIcon,
-      faqBtn,
-      faqIcon,
-      submitBtn,
-      resetBtn,
-      hintBtn,
-      giveUpBtn,
-      content,
-    ].forEach((element) => element.classList.toggle("selected"));
 
     contrastMode ? !contrastMode : contrastMode;
   });
@@ -401,11 +377,9 @@ function populateButtons() {
   submitBtn.addEventListener("click", () => {
     window.scrollTo(0, 350);
 
-    if (currentGuessArray.includes("none")) {
-      alert("You need 5 cards to guess");
-    } else {
-      handleSubmit();
-    }
+    currentGuessArray.includes("none")
+      ? alert("You must select 5 cards")
+      : handleSubmit();
   });
 
   resetBtn.addEventListener("click", () => {
@@ -431,5 +405,3 @@ function populateButtons() {
     }
   });
 }
-
-// select all buttons in a list ... buttonList.forEach(pass event listener) ??
