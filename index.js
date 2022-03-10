@@ -9,14 +9,31 @@ let rowGuessCounter = 0;
 let gameEnd = false;
 let losing = true;
 let contrastMode = false;
+let hintClicked = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-  appendGoalCards();
   setGoalCards();
+  appendGoalCards();
   setAvailableCards();
   createGuessGrid();
   populateButtons();
 });
+
+const createDivElement = (classNameArr, id) => {
+  let div = document.createElement("div");
+  id ? (div.id = id) : null;
+
+  classNameArr.forEach((className) => div.classList.add(className));
+  return div;
+};
+
+const createImgElement = (src, className) => {
+  let img = document.createElement("img");
+  img.src = src;
+  className ? (img.className = className) : null;
+
+  return img;
+};
 
 const getFullDeck = async (deckID) => {
   let response = await fetch(`${BASE_URL}/${deckID}/draw/?count=52`);
@@ -25,13 +42,11 @@ const getFullDeck = async (deckID) => {
     const tempCard = document.createElement("div");
     tempCard.className = "guessableCards";
 
-    const tempImg = document.createElement("img");
-    tempImg.src = element.images.png;
+    const tempImg = createImgElement(element.images.png);
+
     tempImg.addEventListener("click", (e) => {
       console.log(e.target);
       if (currentGuessArray.includes("none")) {
-        //if there are no empty strings in array
-
         if (!currentGuessArray.includes(element.code)) {
           addGuess(e);
         }
@@ -51,62 +66,32 @@ const setAvailableCards = async () => {
   getFullDeck(deckID);
 };
 
-//
-// function setAvailableCards() {
-//   fetch("https://deckofcardsapi.com/api/deck/new/")
-//     .then((response) => response.json())
-//     .then((data) => {
-//       const deckID = data.deck_id;
-//       fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
-//         .then((response) => response.json())
-//         .then((data) => {
-//           data.cards.forEach((element) => {
-//             const tempCard = document.createElement("div");
-//             tempCard.className = "guessableCards";
+const renderCardFace = async (goalDeckID) => {
+  let response = await fetch(`${BASE_URL}/${goalDeckID}/draw/?count=5`);
+  let data = await response.json();
+  data.cards.forEach((card) => {
+    console.log(card.code); //leave in for testing
+    const cardFace = document.createElement("img");
+    cardFace.src = card.image;
 
-//             const tempImg = document.createElement("img");
-//             tempImg.src = element.images.png;
-//             tempImg.addEventListener("click", (e) => {
-//               //console.log(currentGuessArray.includes("none"))
-//               if (currentGuessArray.includes("none")) {
-//                 //if there are no empty strings in array
-//                 // !currentGuessArray.includes("")
-//                 if (!currentGuessArray.includes(element.code)) {
-//                   addGuess(e);
-//                 }
-//               }
-//             });
-//             tempImg.id = element.code;
-//             tempCard.append(tempImg);
-//             availableCardsDiv.appendChild(tempCard);
-//           });
-//         });
-//     });
-// }
+    goalCardsArray.push(card.code);
+    goalCardImagesArray.push(card.image);
+  });
+  createHintArray();
+};
 
-function setGoalCards() {
-  fetch(`${BASE_URL}/new/shuffle/?deck_count=1`)
-    .then((response) => response.json())
-    .then((data) => {
-      const goalDeckID = data.deck_id;
+const setGoalCards = async () => {
+  let response = await fetch(`${BASE_URL}/new/shuffle/?deck_count=1`);
+  let data = await response.json();
+  const goalDeckID = data.deck_id;
 
-      fetch(`${BASE_URL}/${goalDeckID}/draw/?count=5`)
-        .then((response) => response.json())
-        .then((data) => {
-          data.cards.forEach((card) => {
-            console.log(card.code); //leave in for testing
-            const cardFace = document.createElement("img");
-            cardFace.src = card.image;
-
-            goalCardsArray.push(card.code);
-            goalCardImagesArray.push(card.image);
-          });
-        });
-    });
-}
+  renderCardFace(goalDeckID);
+};
 
 function appendGoalCards() {
   for (let i = 0; i < 5; i++) {
+    // const cardImg = createImgElement("", "cardBack"); **** ?
+
     const cardImg = document.createElement("img");
     cardImg.classList.add("cardBack");
     let thisGoal = document.querySelector(`#goal${i}`);
@@ -114,43 +99,45 @@ function appendGoalCards() {
     if (!gameEnd) {
       cardImg.src = "assets/card.png";
       thisGoal.append(cardImg);
-    } else if (losing) {
+    } else {
       cardImg.src = goalCardImagesArray[i];
       thisGoal.replaceChildren(cardImg);
-      cardImg.classList.add("losing");
       cardImg.style = "animation-delay: " + i * 0.2 + "s";
-    } else if (!losing) {
-      cardImg.src = goalCardImagesArray[i];
-      thisGoal.replaceChildren(cardImg);
-      cardImg.classList.add("winning");
-      cardImg.style = "animation-delay: " + i * 0.2 + "s";
+
+      if (losing) {
+        cardImg.classList.add("losing");
+      } else if (!losing) {
+        cardImg.classList.add("winning");
+      }
     }
   }
 }
 
 function createGuessGrid() {
-  const gridDiv = document.getElementById("allGuessedCardsDiv");
+  const allGuessedCardsDiv = document.getElementById("allGuessedCardsDiv");
 
   for (let i = 0; i < 5; i++) {
-    const row = document.createElement("div");
-    row.classList.add("guessed");
-    row.id = `guessedCards${i}`;
+    const row = createDivElement(["guessed"], `guessedCards${i}`);
+
     for (let j = 0; j < 5; j++) {
-      const cell = document.createElement("div");
-      cell.classList.add("guessBox", `guess${j}`);
-      cell.id = `cell${i}${j}`;
+      const cell = createDivElement(["guessBox", `guess${j}`], `cell${i}${j}`);
       row.appendChild(cell);
     }
-    gridDiv.append(row);
+    allGuessedCardsDiv.append(row);
   }
 }
 
+const removeGuessCard = (e, currentID) => {
+  const removedBox = e.target.parentNode;
+  removedBox.classList.remove("guessedCard", `guess${currentID}`);
+  const indexToRemove = currentGuessArray.indexOf(currentID);
+  currentGuessArray[indexToRemove] = "none";
+  e.target.remove();
+  rowGuessCounter--;
+};
+
 function addGuess(e) {
-  //console.log(e)
-  //if a card gets clicked and it is in a cell that is less than currentguessarray.length - 1, the next card needs to be appended to that cell, then return to .guess${cGA.length}
-  //if the first child is a guessed card, move on the next sibling that does not have .guessedcard in classlist
   const guessedCardRow = document.querySelector(`#guessedCards${guessCounter}`);
-  //console.log( `#cell${guessCounter}${rowGuessCounter}`)
   let guessedCardCell = guessedCardRow.querySelector(
     `#cell${guessCounter}${rowGuessCounter}`
   );
@@ -159,171 +146,128 @@ function addGuess(e) {
     guessedCardCell = guessedCardCell.previousSibling;
   }
   const inputCellNum = guessedCardCell.id[5];
-  //console.log(inputCellNum)
-
-  const guessedCardImage = document.createElement("img");
-  guessedCardImage.src = e.target.src;
-
+  const guessedCardImage = createImgElement(e.target.src);
   const currentID = e.target.id;
   currentGuessArray[inputCellNum] = currentID;
-  //console.log(currentGuessArray)
+
   guessedCardCell.classList.add(`guess${currentID}`, `guessedCard`);
 
-  //REMOVE CARD IF CLICKED
-  guessedCardImage.addEventListener("click", (e) => {
-    const removedBox = e.target.parentNode;
-    removedBox.classList.remove("guessedCard", `guess${currentID}`);
-    const indexToRemove = currentGuessArray.indexOf(currentID);
-    //currentGuessArray.splice(indexToRemove, 1);
-    currentGuessArray[indexToRemove] = "none";
-    //console.log(currentGuessArray)
-    e.target.remove();
-    rowGuessCounter--;
-  });
+  //REMOVES CARD FROM DOM & GUESS ARRAY WHEN CLICKED
+  guessedCardImage.addEventListener("click", (e) =>
+    removeGuessCard(e, currentID)
+  );
 
   guessedCardCell.append(guessedCardImage);
   rowGuessCounter++;
 }
+
+const handleResultStyling = (
+  suitDiv,
+  currentGuessSuit,
+  valueDiv,
+  currentGuessValue
+) => {
+  let suitIcon;
+  currentGuessValue === "0"
+    ? (valueDiv.textContent = "10")
+    : (valueDiv.textContent = currentGuessValue);
+
+  switch (currentGuessSuit) {
+    case "H":
+      suitIcon = "❤️";
+      break;
+    case "S":
+      suitIcon = "♠️";
+      break;
+    case "C":
+      suitIcon = "♣️";
+      break;
+    case "D":
+      suitIcon = "♦️";
+      break;
+  }
+  suitDiv.textContent = suitIcon;
+};
+
+const testMatch = (testCase, checkIndex, currentGuessCase) => {
+  let i = 0;
+  while (!testCase && i < 5) {
+    if (currentGuessCase === goalCardsArray[i][checkIndex]) {
+      testCase = true;
+    }
+    i++;
+  }
+  return testCase;
+};
 
 function handleSubmit() {
   const currentGuessRow = document.querySelector(
     `#guessedCards${guessCounter}`
   );
 
-  const commonCards = goalCardsArray.filter((id) => {
-    return currentGuessArray.includes(id);
-  });
-
   for (let i = 0; i < 5; i++) {
     const currentGuessCell = currentGuessRow.querySelector(`.guess${i}`);
+    const resultDiv = createDivElement(["results"]);
+    const valueDiv = createDivElement(["value"]);
+    const suitDiv = createDivElement(["suit"]);
+    const currentGuessValue = currentGuessArray[i][0];
+    const currentGuessSuit = currentGuessArray[i][1];
+    const matchInGuessable = document.getElementById(currentGuessArray[i]);
 
-    const resultDiv = document.createElement("div");
-    const valueDiv = document.createElement("div");
-    const suitDiv = document.createElement("div");
     let suitMatch = false;
     let valueMatch = false;
     let allMatch = false;
 
-    const currentGuessValue = currentGuessArray[i][0];
-    const currentGuessSuit = currentGuessArray[i][1];
-    const matchInGuessable = document.getElementById(currentGuessArray[i]);
-    let suitIcon;
-
     currentGuessCell.classList.add("blocked", "submitted");
-    resultDiv.classList.add("results");
-    suitDiv.classList.add("suit");
-    valueDiv.classList.add("value");
+    handleResultStyling(suitDiv, currentGuessSuit, valueDiv, currentGuessValue);
 
-    if (currentGuessValue === "0") {
-      valueDiv.textContent = "10";
-    } else {
-      valueDiv.textContent = currentGuessValue;
-    }
-
-    switch (currentGuessSuit) {
-      case "H":
-        suitIcon = "❤️";
-        break;
-      case "S":
-        suitIcon = "♠️";
-        break;
-      case "C":
-        suitIcon = "♣️";
-        break;
-      case "D":
-        suitIcon = "♦️";
-        break;
-    }
-    suitDiv.textContent = suitIcon;
-
+    // determines if currentGuess fully matches anything in goalCards
     if (goalCardsArray.includes(currentGuessArray[i])) {
       allMatch = true;
-      suitMatch = true;
-      valueMatch = true;
       resultDiv.textContent = "QARD!";
-
-      //console.log(matchInGuessable)
       matchInGuessable.classList.add("qard");
       resultDiv.classList.add("allMatch");
-
-      if (!contrastMode) {
-        resultDiv.classList.add("allMatch");
-      } else {
-        resultDiv.classList.add("allMatch", "contrast");
-      }
     } else {
-      //const matchInGuessable = document.getElementById(currentGuessArray[i])
-      //console.log(matchInGuessable)
+      // determine if currentGuess is partial match
       matchInGuessable.classList.add("eliminated");
-      let i = 0;
-
-      while (!valueMatch && i < 5) {
-        if (currentGuessValue === goalCardsArray[i][0]) {
-          valueMatch = true;
-        }
-        i++;
-      }
-
-      let j = 0;
-      while (!suitMatch && j < 5) {
-        if (currentGuessSuit === goalCardsArray[j][1]) {
-          suitMatch = true;
-        }
-        j++;
-      }
+      valueMatch = testMatch(valueMatch, 0, currentGuessValue);
+      suitMatch = testMatch(suitMatch, 1, currentGuessSuit);
     }
 
-    if (valueMatch) {
-      if (!contrastMode) {
-        valueDiv.classList.add("correct");
-      } else {
-        valueDiv.classList.add("correct", "contrast");
-      }
-    } else {
-      if (!contrastMode) {
-        valueDiv.classList.add("wrong");
-      } else {
-        valueDiv.classList.add("wrong", "contrast");
-      }
-    }
+    let testResult;
+    valueMatch ? (testResult = "correct") : (testResult = "wrong");
+    valueDiv.classList.add(testResult);
 
-    if (suitMatch) {
-      if (!contrastMode) {
-        suitDiv.classList.add("correct");
-      } else {
-        suitDiv.classList.add("correct", "contrast");
-      }
-    } else {
-      if (!contrastMode) {
-        suitDiv.classList.add("wrong");
-      } else {
-        suitDiv.classList.add("wrong", "contrast");
-      }
-    }
+    suitMatch ? (testResult = "correct") : (testResult = "wrong");
+    suitDiv.classList.add(testResult);
 
     if (!allMatch) {
       resultDiv.append(valueDiv, suitDiv);
     }
-    // if(!suitMatch || !valueMatch){
-    //   const matchInGuessable = document.getElementById(currentGuessArray[i])
-    //   console.log(matchInGuessable)
-    //   matchInGuessable.classList.add("eliminated")
-    // }
     currentGuessCell.append(resultDiv);
   }
+
+  const commonCards = goalCardsArray.filter((id) => {
+    return currentGuessArray.includes(id);
+  });
+
   if (commonCards.length === 5) {
     losing = false;
     endGame();
-  } else if (guessCounter === 5) {
+  }
+  guessCounter++;
+
+  if (guessCounter === 5) {
     endGame();
   }
 
   currentGuessArray = ["none", "none", "none", "none", "none"];
-  guessCounter++;
   rowGuessCounter = 0;
 }
 
-function makeHint() {
+let hintArray = [];
+
+function createHintArray() {
   let spadeString = " spades";
   let clubString = " clubs";
   let diamondString = " diamonds";
@@ -364,98 +308,100 @@ function makeHint() {
     heartString = " heart";
   }
 
-  //console.log("spades", spadeNum, "clubs ", clubNum, " diamonds ", diamondNum, " hearts ", heartNum)
-
-  const hintArray = [
+  hintArray.push(
     spadeNum + spadeString,
     clubNum + clubString,
     diamondNum + diamondString,
-    heartNum + heartString,
-  ];
-  const randomIndex = Math.floor(Math.random() * hintArray.length);
-  const hint = `This QARDLE has ${hintArray[randomIndex]}.`;
+    heartNum + heartString
+  );
+
+  return hintArray;
+}
+
+function getHint() {
+  const remainingHints = hintArray.length;
+  const randomIndex = Math.floor(Math.random() * remainingHints);
+  let remainingHintsText = ` You have ${remainingHints - 1} hints remaining.`;
+  if (remainingHints === 2) {
+    remainingHintsText = ` You have 1 hint remaining.`;
+  } else if (remainingHints === 1) {
+    remainingHintsText = `This is your last hint, good luck!`;
+  }
+  let hint = `This QARDLE has ${hintArray[randomIndex]}.` + remainingHintsText;
+  if (remainingHints === 0) {
+    hint = "You have no more hints, sorry, not sorry.";
+  }
+  hintArray.splice(randomIndex, 1);
   return hint;
 }
 
 // Game End Function
 function endGame() {
-  submitBtn.classList.add("hidden");
-  giveUpBtn.classList.add("hidden");
-  hintBtn.classList.add("hidden");
-  availableCardsDiv.classList.add("hidden");
+  [submitBtn, giveUpBtn, hintBtn, availableCardsDiv].forEach((element) =>
+    element.classList.add("hidden")
+  );
   gameEnd = true;
   appendGoalCards();
   window.scrollTo(0, 0);
   Splitting();
 
-  if (!losing) {
-    const winningDiv = document.querySelector("#winningDiv");
-    winningDiv.classList.remove("hidden");
-  } else {
-    const losingDiv = document.querySelector("#losingDiv");
-    losingDiv.classList.remove("hidden");
-  }
+  const winningDiv = document.querySelector("#winningDiv");
+  const losingDiv = document.querySelector("#losingDiv");
+
+  losing
+    ? losingDiv.classList.remove("hidden")
+    : winningDiv.classList.remove("hidden");
 }
-const body = document.getElementsByTagName("body");
 
 // Buttons & Event Listeners
 function populateButtons() {
   const faqBtn = document.querySelector("#faqBtn");
+  const submitBtn = document.querySelector("#submitBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const giveUpBtn = document.querySelector("#giveUpBtn");
+  const hintBtn = document.getElementById("hintBtn");
+  const contrastBtn = document.querySelector("#contrastBtn");
+
   faqBtn.addEventListener("click", () => {
     const faqText = document.querySelector("#faqText");
     faqText.classList.toggle("hidden");
   });
 
   contrastBtn.addEventListener("click", () => {
-    const contrastBtn = document.querySelector("#contrastBtn");
-    const contrastIcon = document.querySelector("#contrastIcon");
-    const faqIcon = document.querySelector("#faqIcon");
     const content = document.querySelector("#content");
-    // const allButtons = document.getElementsByTagName("button");
-
-    contrastBtn.classList.toggle("selected");
-    contrastIcon.classList.toggle("selected");
     content.classList.toggle("contrast");
-    faqBtn.classList.toggle("selected");
-    faqIcon.classList.toggle("selected");
-    submitBtn.classList.toggle("selected");
-    resetBtn.classList.toggle("selected");
-    // allButtons.classList.add("selected");
 
-    if (!contrastMode) {
-      contrastMode = true;
-    } else {
-      contrastMode = false;
-    }
+    contrastMode ? !contrastMode : contrastMode;
   });
 
-  const submitBtn = document.querySelector("#submitBtn");
   submitBtn.addEventListener("click", () => {
     window.scrollTo(0, 350);
 
-    if (currentGuessArray.includes("none")) {
-      //if any empty strings in array
-      alert("You need 5 cards to guess");
-    } else {
-      handleSubmit();
-    }
+    currentGuessArray.includes("none")
+      ? alert("You must select 5 cards")
+      : handleSubmit();
   });
 
-  const resetBtn = document.getElementById("resetBtn");
   resetBtn.addEventListener("click", () => {
     document.location.reload();
   });
 
-  const giveUpBtn = document.querySelector("#giveUpBtn");
   giveUpBtn.addEventListener("click", () => {
     losing = true;
     endGame();
   });
 
-  const hintBtn = document.getElementById("hintBtn");
   hintBtn.addEventListener("click", () => {
     const hintText = document.querySelector("#hintDiv");
-    hintText.textContent = makeHint();
+
     hintText.classList.toggle("hidden");
+
+    if (!hintClicked) {
+      hintText.textContent = getHint();
+      hintClicked = true;
+    } else {
+      hintClicked = false;
+      console.log(hintClicked);
+    }
   });
 }
