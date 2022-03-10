@@ -18,6 +18,22 @@ document.addEventListener("DOMContentLoaded", () => {
   populateButtons();
 });
 
+const createDivElement = (classNameArr, id) => {
+  let div = document.createElement("div");
+  id ? (div.id = id) : null;
+
+  classNameArr.forEach((className) => div.classList.add(className));
+  return div;
+};
+
+const createImgElement = (src, className) => {
+  let img = document.createElement("img");
+  img.src = src;
+  className ? (img.className = className) : null;
+
+  return img;
+};
+
 const getFullDeck = async (deckID) => {
   let response = await fetch(`${BASE_URL}/${deckID}/draw/?count=52`);
   let data = await response.json();
@@ -25,13 +41,11 @@ const getFullDeck = async (deckID) => {
     const tempCard = document.createElement("div");
     tempCard.className = "guessableCards";
 
-    const tempImg = document.createElement("img");
-    tempImg.src = element.images.png;
+    const tempImg = createImgElement(element.images.png);
+
     tempImg.addEventListener("click", (e) => {
       console.log(e.target);
       if (currentGuessArray.includes("none")) {
-        //if there are no empty strings in array
-
         if (!currentGuessArray.includes(element.code)) {
           addGuess(e);
         }
@@ -51,62 +65,31 @@ const setAvailableCards = async () => {
   getFullDeck(deckID);
 };
 
-//
-// function setAvailableCards() {
-//   fetch("https://deckofcardsapi.com/api/deck/new/")
-//     .then((response) => response.json())
-//     .then((data) => {
-//       const deckID = data.deck_id;
-//       fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`)
-//         .then((response) => response.json())
-//         .then((data) => {
-//           data.cards.forEach((element) => {
-//             const tempCard = document.createElement("div");
-//             tempCard.className = "guessableCards";
+const renderCardFace = async (goalDeckID) => {
+  let response = await fetch(`${BASE_URL}/${goalDeckID}/draw/?count=5`);
+  let data = await response.json();
+  data.cards.forEach((card) => {
+    console.log(card.code); //leave in for testing
+    const cardFace = document.createElement("img");
+    cardFace.src = card.image;
 
-//             const tempImg = document.createElement("img");
-//             tempImg.src = element.images.png;
-//             tempImg.addEventListener("click", (e) => {
-//               //console.log(currentGuessArray.includes("none"))
-//               if (currentGuessArray.includes("none")) {
-//                 //if there are no empty strings in array
-//                 // !currentGuessArray.includes("")
-//                 if (!currentGuessArray.includes(element.code)) {
-//                   addGuess(e);
-//                 }
-//               }
-//             });
-//             tempImg.id = element.code;
-//             tempCard.append(tempImg);
-//             availableCardsDiv.appendChild(tempCard);
-//           });
-//         });
-//     });
-// }
+    goalCardsArray.push(card.code);
+    goalCardImagesArray.push(card.image);
+  });
+};
 
-function setGoalCards() {
-  fetch(`${BASE_URL}/new/shuffle/?deck_count=1`)
-    .then((response) => response.json())
-    .then((data) => {
-      const goalDeckID = data.deck_id;
+const setGoalCards = async () => {
+  let response = await fetch(`${BASE_URL}/new/shuffle/?deck_count=1`);
+  let data = await response.json();
+  const goalDeckID = data.deck_id;
 
-      fetch(`${BASE_URL}/${goalDeckID}/draw/?count=5`)
-        .then((response) => response.json())
-        .then((data) => {
-          data.cards.forEach((card) => {
-            console.log(card.code); //leave in for testing
-            const cardFace = document.createElement("img");
-            cardFace.src = card.image;
-
-            goalCardsArray.push(card.code);
-            goalCardImagesArray.push(card.image);
-          });
-        });
-    });
-}
+  renderCardFace(goalDeckID);
+};
 
 function appendGoalCards() {
   for (let i = 0; i < 5; i++) {
+    // const cardImg = createImgElement("", "cardBack"); **** ?
+
     const cardImg = document.createElement("img");
     cardImg.classList.add("cardBack");
     let thisGoal = document.querySelector(`#goal${i}`);
@@ -114,34 +97,31 @@ function appendGoalCards() {
     if (!gameEnd) {
       cardImg.src = "assets/card.png";
       thisGoal.append(cardImg);
-    } else if (losing) {
+    } else {
       cardImg.src = goalCardImagesArray[i];
       thisGoal.replaceChildren(cardImg);
-      cardImg.classList.add("losing");
       cardImg.style = "animation-delay: " + i * 0.2 + "s";
-    } else if (!losing) {
-      cardImg.src = goalCardImagesArray[i];
-      thisGoal.replaceChildren(cardImg);
-      cardImg.classList.add("winning");
-      cardImg.style = "animation-delay: " + i * 0.2 + "s";
+
+      if (losing) {
+        cardImg.classList.add("losing");
+      } else if (!losing) {
+        cardImg.classList.add("winning");
+      }
     }
   }
 }
 
 function createGuessGrid() {
-  const gridDiv = document.getElementById("allGuessedCardsDiv");
+  const allGuessedCardsDiv = document.getElementById("allGuessedCardsDiv");
 
   for (let i = 0; i < 5; i++) {
-    const row = document.createElement("div");
-    row.classList.add("guessed");
-    row.id = `guessedCards${i}`;
+    const row = createDivElement(["guessed"], `guessedCards${i}`);
+
     for (let j = 0; j < 5; j++) {
-      const cell = document.createElement("div");
-      cell.classList.add("guessBox", `guess${j}`);
-      cell.id = `cell${i}${j}`;
+      const cell = createDivElement(["guessBox", `guess${j}`], `cell${i}${j}`);
       row.appendChild(cell);
     }
-    gridDiv.append(row);
+    allGuessedCardsDiv.append(row);
   }
 }
 
@@ -314,12 +294,14 @@ function handleSubmit() {
   if (commonCards.length === 5) {
     losing = false;
     endGame();
-  } else if (guessCounter === 5) {
+  }
+  guessCounter++;
+
+  if (guessCounter === 5) {
     endGame();
   }
 
   currentGuessArray = ["none", "none", "none", "none", "none"];
-  guessCounter++;
   rowGuessCounter = 0;
 }
 
