@@ -55,6 +55,7 @@ LEARNINGS:
 - CSS styling
 - CSS animation
 - troubleshooting and debugging
+- GitHub workflow & version control
 
 ---
 

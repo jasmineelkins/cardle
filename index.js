@@ -2,7 +2,7 @@ const goalCardsArray = [];
 const goalCardImagesArray = [];
 const availableCardsDiv = document.getElementById("availableCardsDiv");
 
-let currentGuessArray = ["none","none","none","none","none"];
+let currentGuessArray = ["none", "none", "none", "none", "none"];
 let guessCounter = 0;
 let rowGuessCounter = 0;
 let gameEnd = false;
@@ -34,7 +34,7 @@ function setAvailableCards() {
             tempImg.addEventListener("click", (e) => {
               //console.log(currentGuessArray.includes("none"))
               if (currentGuessArray.includes("none")) {
-                //if there are no empty strings in array 
+                //if there are no empty strings in array
                 // !currentGuessArray.includes("")
                 if (!currentGuessArray.includes(element.code)) {
                   addGuess(e);
@@ -103,7 +103,7 @@ function createGuessGrid() {
     for (let j = 0; j < 5; j++) {
       const cell = document.createElement("div");
       cell.classList.add("guessBox", `guess${j}`);
-      cell.id = `cell${i}${j}`
+      cell.id = `cell${i}${j}`;
       row.appendChild(cell);
     }
     gridDiv.append(row);
@@ -120,10 +120,10 @@ function addGuess(e) {
     `#cell${guessCounter}${rowGuessCounter}`
   );
 
-  while (guessedCardCell.classList.value.includes("guessedCard")){
-    guessedCardCell = guessedCardCell.previousSibling
+  while (guessedCardCell.classList.value.includes("guessedCard")) {
+    guessedCardCell = guessedCardCell.previousSibling;
   }
-  const inputCellNum = guessedCardCell.id[5]
+  const inputCellNum = guessedCardCell.id[5];
   //console.log(inputCellNum)
 
   const guessedCardImage = document.createElement("img");
@@ -136,18 +136,18 @@ function addGuess(e) {
 
   //REMOVE CARD IF CLICKED
   guessedCardImage.addEventListener("click", (e) => {
-    const removedBox = e.target.parentNode
-    removedBox.classList.remove("guessedCard",`guess${currentID}`)
+    const removedBox = e.target.parentNode;
+    removedBox.classList.remove("guessedCard", `guess${currentID}`);
     const indexToRemove = currentGuessArray.indexOf(currentID);
     //currentGuessArray.splice(indexToRemove, 1);
     currentGuessArray[indexToRemove] = "none";
     //console.log(currentGuessArray)
     e.target.remove();
-    rowGuessCounter --;
+    rowGuessCounter--;
   });
 
   guessedCardCell.append(guessedCardImage);
-  rowGuessCounter ++;
+  rowGuessCounter++;
 }
 
 function handleSubmit() {
@@ -171,7 +171,7 @@ function handleSubmit() {
 
     const currentGuessValue = currentGuessArray[i][0];
     const currentGuessSuit = currentGuessArray[i][1];
-    const matchInGuessable = document.getElementById(currentGuessArray[i])
+    const matchInGuessable = document.getElementById(currentGuessArray[i]);
     let suitIcon;
 
     currentGuessCell.classList.add("blocked", "submitted");
@@ -206,21 +206,20 @@ function handleSubmit() {
       suitMatch = true;
       valueMatch = true;
       resultDiv.textContent = "QARD!";
-      
+
       //console.log(matchInGuessable)
-      matchInGuessable.classList.add("qard")
+      matchInGuessable.classList.add("qard");
       resultDiv.classList.add("allMatch");
-      
+
       if (!contrastMode) {
         resultDiv.classList.add("allMatch");
       } else {
         resultDiv.classList.add("allMatch", "contrast");
       }
-
     } else {
       //const matchInGuessable = document.getElementById(currentGuessArray[i])
       //console.log(matchInGuessable)
-      matchInGuessable.classList.add("eliminated")
+      matchInGuessable.classList.add("eliminated");
       let i = 0;
 
       while (!valueMatch && i < 5) {
@@ -280,58 +279,74 @@ function handleSubmit() {
   if (commonCards.length === 5) {
     losing = false;
     endGame();
+  } else if (guessCounter === 5) {
+    endGame();
   }
 
   currentGuessArray = ["none", "none", "none", "none", "none"];
   guessCounter++;
   rowGuessCounter = 0;
-
-  
 }
 
-function makeHint(){
-  let spadeString = ' spades'
-  let clubString = " clubs"
-  let diamondString = " diamonds"
-  let heartString = " hearts"
+function makeHint() {
+  let spadeString = " spades";
+  let clubString = " clubs";
+  let diamondString = " diamonds";
+  let heartString = " hearts";
 
-  let spadeNum = 0
-  let clubNum = 0
-  let diamondNum = 0
-  let heartNum = 0
+  let spadeNum = 0;
+  let clubNum = 0;
+  let diamondNum = 0;
+  let heartNum = 0;
 
-  goalCardsArray.forEach( (goalCard) => {
+  goalCardsArray.forEach((goalCard) => {
     switch (goalCard[1]) {
-      case 'S' : spadeNum += 1; 
-      break;
-      case 'C' : clubNum += 1;
-      break;
-      case "D": diamondNum += 1;
-      break;
-      case "H": heartNum += 1;
-      break;
+      case "S":
+        spadeNum += 1;
+        break;
+      case "C":
+        clubNum += 1;
+        break;
+      case "D":
+        diamondNum += 1;
+        break;
+      case "H":
+        heartNum += 1;
+        break;
     }
-  })
+  });
 
-  if (spadeNum === 1){ spadeString = " spade"}
-  if (clubNum === 1){clubString = " club"}
-  if (diamondNum === 1){diamondString = " diamond"}
-  if (heartNum === 1){heartString = " heart"}
+  if (spadeNum === 1) {
+    spadeString = " spade";
+  }
+  if (clubNum === 1) {
+    clubString = " club";
+  }
+  if (diamondNum === 1) {
+    diamondString = " diamond";
+  }
+  if (heartNum === 1) {
+    heartString = " heart";
+  }
 
   //console.log("spades", spadeNum, "clubs ", clubNum, " diamonds ", diamondNum, " hearts ", heartNum)
 
-  const hintArray = [(spadeNum + spadeString), (clubNum + clubString), (diamondNum + diamondString), (heartNum + heartString)]
-  const randomIndex = Math.floor(Math.random()*hintArray.length)
-  const hint = `This QARDLE has ${hintArray[randomIndex]}.`
-  return hint
-
+  const hintArray = [
+    spadeNum + spadeString,
+    clubNum + clubString,
+    diamondNum + diamondString,
+    heartNum + heartString,
+  ];
+  const randomIndex = Math.floor(Math.random() * hintArray.length);
+  const hint = `This QARDLE has ${hintArray[randomIndex]}.`;
+  return hint;
 }
 
 // Game End Function
 function endGame() {
   submitBtn.classList.add("hidden");
   giveUpBtn.classList.add("hidden");
-  hintBtn.classList.add("hidden")
+  hintBtn.classList.add("hidden");
   availableCardsDiv.classList.add("hidden");
   gameEnd = true;
   appendGoalCards();
@@ -368,6 +383,8 @@ function populateButtons() {
     content.classList.toggle("contrast");
     faqBtn.classList.toggle("selected");
     faqIcon.classList.toggle("selected");
+    submitBtn.classList.toggle("selected");
+    resetBtn.classList.toggle("selected");
     // allButtons.classList.add("selected");
 
     if (!contrastMode) {
@@ -402,8 +419,8 @@ function populateButtons() {
 
   const hintBtn = document.getElementById("hintBtn");
   hintBtn.addEventListener("click", () => {
-    const hintText = document.querySelector("#hintDiv")
-    hintText.textContent = makeHint()
-    hintText.classList.toggle("hidden")
-  })
+    const hintText = document.querySelector("#hintDiv");
+    hintText.textContent = makeHint();
+    hintText.classList.toggle("hidden");
+  });
 }
