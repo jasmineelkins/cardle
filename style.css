@@ -118,6 +118,7 @@ button {
   transition: 0.5s;
   font-family: "Megrim", "Verdana", sans-serif;
   font-variant: small-caps;
+  text-shadow: 0 0 1px black;
   background-color: rgb(210, 110, 80);
 }
 
@@ -539,7 +540,6 @@ button:hover {
   }
 
   .guessed {
-    /* grid-template-columns: repeat(5, 60px); */
     column-gap: 10px;
     padding: 8px;
   }
@@ -603,5 +603,22 @@ button:hover {
 
   .guessableCards img {
     height: 80px;
+  }
+
+  /* END OF GAME ANNOUNCEMENTS ----------------------- */
+  #winningDiv {
+    padding: 30px 30px;
+    font-size: 14px;
+  }
+
+  #losingDiv {
+    padding: 40px 30px;
+    font-size: 12px;
+  }
+
+  .title .laser {
+    position: absolute;
+    top: 40px;
+    right: 0px;
   }
 }
