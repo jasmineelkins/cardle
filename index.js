@@ -22,26 +22,23 @@ document.addEventListener("DOMContentLoaded", () => {
     getGoalCardDeck();
     // appendGoalCards();
   } else {
+    gameObj = parsedGame
     setValuesFromLoadedGame(parsedGame)
   }
   appendGoalCards()
   setAvailableCards();
   createGuessGrid();
   populateButtons();
-  const loadSavedGameString = localStorage.getItem("game")
-  const loadSavedGame = JSON.parse(loadSavedGameString)
 });
 
 const saveGameToLocalStorage = () => {
   localStorage.setItem("game", JSON.stringify(gameObj))
-  console.log(gameObj)
 }
 
 
 const checkIfGameExists = () => {
   const storedGameString = localStorage.getItem("game")
   const parsedGame = JSON.parse(storedGameString)
-  console.log("parsedGame ", parsedGame)
   if (!isEmpty(parsedGame)){
     savedGame = true
     return parsedGame
@@ -55,11 +52,11 @@ function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
-const setValuesFromLoadedGame = (gameObj) => {
-  goalCardsArray = gameObj.goalCardsArray
-  goalCardImagesArray = gameObj.goalCardImagesArray
-  hintArray = gameObj.hintArray
-  console.log("setvaluesfromloadedGame test ", goalCardsArray)
+const setValuesFromLoadedGame = (passedGameObj) => {
+  goalCardsArray = passedGameObj.goalCardsArray
+  goalCardImagesArray = passedGameObj.goalCardImagesArray
+  hintArray = passedGameObj.hintArray
+  guessCounter = passedGameObj.guessCounter
 }
 const createDivElement = (classNameArr, id) => {
   let div = document.createElement("div");
@@ -81,9 +78,7 @@ const getFullDeck = async (deckID) => {
   let response = await fetch(`${BASE_URL}/${deckID}/draw/?count=52`);
   let data = await response.json();
   data.cards.forEach((element) => {
-    const tempCard = document.createElement("div");
-    tempCard.className = "guessableCards";
-
+    const tempCard = createDivElement(["guessableCards"])
     const tempImg = createImgElement(element.images.png);
 
     tempImg.addEventListener("click", (e) => {
@@ -120,9 +115,9 @@ const chooseGoalCards = async (goalDeckID) => {
   });
   gameObj.goalCardsArray = goalCardsArray
   gameObj.goalCardImagesArray = goalCardImagesArray
-  //console.log(goalCardImagesArray)
   createHintArray();
   gameObj.hintArray = hintArray
+  gameObj.guessCounter = guessCounter;
   saveGameToLocalStorage()
 };
 
@@ -306,10 +301,13 @@ function handleSubmit() {
     endGame();
   }
   guessCounter++;
+  gameObj.guessCounter++
 
   if (guessCounter === 5) {
     endGame();
   }
+
+  
 
   currentGuessArray = ["none", "none", "none", "none", "none"];
   rowGuessCounter = 0;
@@ -430,7 +428,6 @@ function populateButtons() {
 
   submitBtn.addEventListener("click", () => {
     window.scrollTo(0, 350);
-
     currentGuessArray.includes("none")
       ? alert("You must select 5 cards")
       : handleSubmit();
