@@ -446,7 +446,7 @@ button:hover {
 
 .title .write .word,
 .title .laser .word {
-  animation-duration: 5s;
+  animation-duration: 2s;
   animation-delay: 0s;
   animation-iteration-count: 1;
 }
