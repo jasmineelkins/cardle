@@ -232,7 +232,7 @@ const handleResultStyling = (
           break;
         }
         suitDiv.textContent = suitIcon;
-      };
+  };
       
 const testMatch = (testCase, checkIndex, currentGuessCase) => {
   let i = 0;
@@ -245,16 +245,19 @@ const testMatch = (testCase, checkIndex, currentGuessCase) => {
   return testCase;
 };
 
-let savedGuessesArray = []
-const saveGuessAsObj = (cellID, cardCode, cardImg, result) => {
-  const tempGuessObj = {}
-  savedGuessesArray.push(tempGuessObj)
-}
+//SAVED FOR USE IN PERSISTANCE ONCE REFACTORED
 
-const displayGuesses = (guessObjArray) => {
+// let savedGuessesArray = []
+// const saveGuessAsObj = (cellID, cardCode, cardImg, result) => {
+//   const tempGuessObj = {}
+//   savedGuessesArray.push(tempGuessObj)
+// }
+
+// const displayGuesses = (guessObjArray) => {
   
 
-}
+// }
+
 const checkIfGameEnd = () => {
   const commonCards = goalCardsArray.filter((id) => {
     return currentGuessArray.includes(id);
@@ -263,7 +266,6 @@ const checkIfGameEnd = () => {
     losing = false;
     endGame();
   }
-
   if (guessCounter === 5) {
     endGame();
   }
@@ -274,12 +276,22 @@ const cleanUpAfterGuess = () => {
   rowGuessCounter = 0;
 }
 
+const renderResultDiv = (resultDiv, resultBool) => {
+  let testResult;
+  resultBool ? (testResult = "correct") : (testResult = "wrong");
+  resultDiv.classList.add(testResult);
+}
+
+
 const evaluateAndRenderCurrentGuess= (currentGuessRow) => {
   for (let i = 0; i < 5; i++) {
     const currentGuessCell = currentGuessRow.querySelector(`.guess${i}`);
+    currentGuessCell.classList.add("blocked", "submitted");
+
     const resultDiv = createDivElement(["results"]);
     const valueDiv = createDivElement(["value"]);
     const suitDiv = createDivElement(["suit"]);
+
     const currentGuessValue = currentGuessArray[i][0];
     const currentGuessSuit = currentGuessArray[i][1];
     const matchInGuessable = document.getElementById(currentGuessArray[i]);
@@ -288,9 +300,7 @@ const evaluateAndRenderCurrentGuess= (currentGuessRow) => {
     let valueMatch = false;
     let allMatch = false;
 
-    currentGuessCell.classList.add("blocked", "submitted");
-    handleResultStyling(suitDiv, currentGuessSuit, valueDiv, currentGuessValue);
-
+    
     // determines if currentGuess fully matches anything in goalCards
     if (goalCardsArray.includes(currentGuessArray[i])) {
       allMatch = true;
@@ -303,15 +313,11 @@ const evaluateAndRenderCurrentGuess= (currentGuessRow) => {
       valueMatch = testMatch(valueMatch, 0, currentGuessValue);
       suitMatch = testMatch(suitMatch, 1, currentGuessSuit);
     }
-
-    let testResult;
-    valueMatch ? (testResult = "correct") : (testResult = "wrong");
-    valueDiv.classList.add(testResult);
-
-    suitMatch ? (testResult = "correct") : (testResult = "wrong");
-    suitDiv.classList.add(testResult);
-
+    
     if (!allMatch) {
+      handleResultStyling(suitDiv, currentGuessSuit, valueDiv, currentGuessValue);
+      renderResultDiv(valueDiv, valueMatch)
+      renderResultDiv(suitDiv, suitMatch)
       resultDiv.append(valueDiv, suitDiv);
     }
     currentGuessCell.append(resultDiv);
