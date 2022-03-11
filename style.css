@@ -320,14 +320,14 @@ button:hover {
 .guessableCards img {
   height: 80px;
   padding: 0;
-  filter: brightness(85%);
+  filter: brightness(80%);
 }
 
 .guessableCards img.eliminated {
-  filter: brightness(75%);
+  filter: brightness(50%);
 }
 .guessableCards img.qard {
-  filter: brightness(190%);
+  filter: brightness(200%);
   /* filter: hue-rotate(180deg); */
   /* filter: invert(77%) sepia(62%) saturate(6242%) hue-rotate(84deg) brightness(116%) contrast(125%) */
 }
