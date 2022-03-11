@@ -199,7 +199,7 @@ function addGuess(e) {
 
   //REMOVES CARD FROM DOM & GUESS ARRAY WHEN CLICKED
   guessedCardImage.addEventListener("click", (e) =>
-    removeGuessCard(e, currentID)
+  removeGuessCard(e, currentID)
   );
 
   guessedCardCell.append(guessedCardImage);
@@ -211,29 +211,29 @@ const handleResultStyling = (
   currentGuessSuit,
   valueDiv,
   currentGuessValue
-) => {
-  let suitIcon;
-  currentGuessValue === "0"
+  ) => {
+    let suitIcon;
+    currentGuessValue === "0"
     ? (valueDiv.textContent = "10")
     : (valueDiv.textContent = currentGuessValue);
-
-  switch (currentGuessSuit) {
-    case "H":
-      suitIcon = "❤️";
+    
+    switch (currentGuessSuit) {
+      case "H":
+        suitIcon = "❤️";
       break;
     case "S":
       suitIcon = "♠️";
       break;
-    case "C":
-      suitIcon = "♣️";
-      break;
-    case "D":
-      suitIcon = "♦️";
-      break;
-  }
-  suitDiv.textContent = suitIcon;
-};
-
+      case "C":
+        suitIcon = "♣️";
+        break;
+        case "D":
+          suitIcon = "♦️";
+          break;
+        }
+        suitDiv.textContent = suitIcon;
+      };
+      
 const testMatch = (testCase, checkIndex, currentGuessCase) => {
   let i = 0;
   while (!testCase && i < 5) {
@@ -245,11 +245,36 @@ const testMatch = (testCase, checkIndex, currentGuessCase) => {
   return testCase;
 };
 
-function handleSubmit() {
-  const currentGuessRow = document.querySelector(
-    `#guessedCards${guessCounter}`
-  );
+let savedGuessesArray = []
+const saveGuessAsObj = (cellID, cardCode, cardImg, result) => {
+  const tempGuessObj = {}
+  savedGuessesArray.push(tempGuessObj)
+}
 
+const displayGuesses = (guessObjArray) => {
+  
+
+}
+const checkIfGameEnd = () => {
+  const commonCards = goalCardsArray.filter((id) => {
+    return currentGuessArray.includes(id);
+  });
+  if (commonCards.length === 5) {
+    losing = false;
+    endGame();
+  }
+
+  if (guessCounter === 5) {
+    endGame();
+  }
+}
+
+const cleanUpAfterGuess = () => {
+  currentGuessArray = ["none", "none", "none", "none", "none"];
+  rowGuessCounter = 0;
+}
+
+const evaluateAndRenderCurrentGuess= (currentGuessRow) => {
   for (let i = 0; i < 5; i++) {
     const currentGuessCell = currentGuessRow.querySelector(`.guess${i}`);
     const resultDiv = createDivElement(["results"]);
@@ -291,29 +316,21 @@ function handleSubmit() {
     }
     currentGuessCell.append(resultDiv);
   }
+}
 
-  const commonCards = goalCardsArray.filter((id) => {
-    return currentGuessArray.includes(id);
-  });
+function handleSubmit() {
+  const currentGuessRow = document.querySelector(
+    `#guessedCards${guessCounter}`
+    );
+  evaluateAndRenderCurrentGuess(currentGuessRow)
 
-  if (commonCards.length === 5) {
-    losing = false;
-    endGame();
-  }
   guessCounter++;
   gameObj.guessCounter++
 
-  if (guessCounter === 5) {
-    endGame();
-  }
-
-  
-
-  currentGuessArray = ["none", "none", "none", "none", "none"];
-  rowGuessCounter = 0;
+  checkIfGameEnd()
+  cleanUpAfterGuess()
   saveGameToLocalStorage();
 }
-
 
 
 function createHintArray() {
