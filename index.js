@@ -1,8 +1,10 @@
 const BASE_URL = "https://deckofcardsapi.com/api/deck";
-const goalCardsArray = [];
-const goalCardImagesArray = [];
 const availableCardsDiv = document.getElementById("availableCardsDiv");
 
+let gameObj = {}
+let goalCardImagesArray = [];
+let goalCardsArray = [];
+let hintArray = [];
 let currentGuessArray = ["none", "none", "none", "none", "none"];
 let guessCounter = 0;
 let rowGuessCounter = 0;
@@ -10,15 +12,55 @@ let gameEnd = false;
 let losing = true;
 let contrastMode = false;
 let hintClicked = false;
+let savedGame = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-  setGoalCards();
-  appendGoalCards();
+  const parsedGame = checkIfGameExists()
+  console.log("!!parsedGame ", !!parsedGame)
+  console.log("savedGame ", savedGame)
+  if (!parsedGame){
+    getGoalCardDeck();
+    // appendGoalCards();
+  } else {
+    setValuesFromLoadedGame(parsedGame)
+  }
+  appendGoalCards()
   setAvailableCards();
   createGuessGrid();
   populateButtons();
+  const loadSavedGameString = localStorage.getItem("game")
+  const loadSavedGame = JSON.parse(loadSavedGameString)
 });
 
+const saveGameToLocalStorage = () => {
+  localStorage.setItem("game", JSON.stringify(gameObj))
+  console.log(gameObj)
+}
+
+
+const checkIfGameExists = () => {
+  const storedGameString = localStorage.getItem("game")
+  const parsedGame = JSON.parse(storedGameString)
+  console.log("parsedGame ", parsedGame)
+  if (!isEmpty(parsedGame)){
+    savedGame = true
+    return parsedGame
+  } else {
+  savedGame =  false
+  return null
+  }
+}
+
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+
+const setValuesFromLoadedGame = (gameObj) => {
+  goalCardsArray = gameObj.goalCardsArray
+  goalCardImagesArray = gameObj.goalCardImagesArray
+  hintArray = gameObj.hintArray
+  console.log("setvaluesfromloadedGame test ", goalCardsArray)
+}
 const createDivElement = (classNameArr, id) => {
   let div = document.createElement("div");
   id ? (div.id = id) : null;
@@ -45,7 +87,6 @@ const getFullDeck = async (deckID) => {
     const tempImg = createImgElement(element.images.png);
 
     tempImg.addEventListener("click", (e) => {
-      console.log(e.target);
       if (currentGuessArray.includes("none")) {
         if (!currentGuessArray.includes(element.code)) {
           addGuess(e);
@@ -66,7 +107,7 @@ const setAvailableCards = async () => {
   getFullDeck(deckID);
 };
 
-const renderCardFace = async (goalDeckID) => {
+const chooseGoalCards = async (goalDeckID) => {
   let response = await fetch(`${BASE_URL}/${goalDeckID}/draw/?count=5`);
   let data = await response.json();
   data.cards.forEach((card) => {
@@ -77,15 +118,24 @@ const renderCardFace = async (goalDeckID) => {
     goalCardsArray.push(card.code);
     goalCardImagesArray.push(card.image);
   });
+  gameObj.goalCardsArray = goalCardsArray
+  gameObj.goalCardImagesArray = goalCardImagesArray
+  //console.log(goalCardImagesArray)
   createHintArray();
+  gameObj.hintArray = hintArray
+  saveGameToLocalStorage()
 };
 
-const setGoalCards = async () => {
+const renderGoalCards = () => {
+
+}
+
+const getGoalCardDeck = async () => {
   let response = await fetch(`${BASE_URL}/new/shuffle/?deck_count=1`);
   let data = await response.json();
   const goalDeckID = data.deck_id;
 
-  renderCardFace(goalDeckID);
+  chooseGoalCards(goalDeckID);
 };
 
 function appendGoalCards() {
@@ -263,9 +313,10 @@ function handleSubmit() {
 
   currentGuessArray = ["none", "none", "none", "none", "none"];
   rowGuessCounter = 0;
+  saveGameToLocalStorage();
 }
 
-let hintArray = [];
+
 
 function createHintArray() {
   let spadeString = " spades";
@@ -351,6 +402,9 @@ function endGame() {
   losing
     ? losingDiv.classList.remove("hidden")
     : winningDiv.classList.remove("hidden");
+
+    gameObj = {}
+    saveGameToLocalStorage;
 }
 
 // Buttons & Event Listeners
@@ -383,6 +437,8 @@ function populateButtons() {
   });
 
   resetBtn.addEventListener("click", () => {
+    gameObj = {}
+    saveGameToLocalStorage();
     document.location.reload();
   });
 
@@ -401,7 +457,6 @@ function populateButtons() {
       hintClicked = true;
     } else {
       hintClicked = false;
-      console.log(hintClicked);
     }
   });
 }
