@@ -3,6 +3,15 @@
   margin: 0;
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden;
+}
+
 body {
   font-family: "Megrim", "Verdana", sans-serif;
   font-variant: small-caps;
@@ -28,7 +37,7 @@ header {
   font-weight: 900;
   color: rgb(178, 225, 203);
   text-shadow: 2px 2px rgb(255, 89, 0);
-  margin: 10px;
+  margin: 20px;
 }
 
 #leftDiv {
@@ -69,7 +78,6 @@ header {
   padding: 12px 6px;
 }
 
-/* UPDATE FAQ SIZE BASED ON SCREEN SIZE */
 #faqText {
   position: absolute;
   top: 150px;
@@ -486,12 +494,13 @@ footer {
   position: static;
   bottom: 0;
   height: 2.5rem;
-  width: 100%;
+  width: 75%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   margin: 60px 0 0 0;
+  padding: 20px;
   /* text-shadow: 0 0 1px peachpuff; */
 }
 
@@ -514,6 +523,18 @@ footer i:hover {
     font-size: 25px;
   }
   /* HEADER & BUTTONS ----------------------------- */
+  #leftDiv {
+    width: 15%;
+  }
+
+  #titleDiv {
+    width: 70%;
+  }
+
+  #headerBtnDiv {
+    width: 15%;
+    padding-right: 10px;
+  }
   #faqIcon,
   #contrastIcon {
     font-size: 10px;
