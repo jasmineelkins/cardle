@@ -306,6 +306,10 @@ button:hover {
   text-shadow: 0 0 1px black;
 }
 
+.contrast .footer {
+  background-color: #333;
+}
+
 /* AVAILABLE CARDS --------------------------------------------------------- */
 #availableCardsDiv {
   display: grid;
